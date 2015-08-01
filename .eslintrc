@@ -10,7 +10,8 @@
     "es6": true
   },
   "globals": {
-    "React":true
+    "React":true,
+    "$": true
   },
   "ecmaProperties": {
     // enable JSX support
