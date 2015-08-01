@@ -1,0 +1,1 @@
+### placed all stores definitions here

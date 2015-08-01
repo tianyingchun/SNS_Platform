@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <base href="/" />
+  <meta charSet="utf-8" />
+  <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The isomorphic app sample</title>
+  <link href="static/css/bootstrap.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="page-header"></div>
+  <div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">TodoList</div>
+        <div class="panel-body">
+          <ul class="list-unstyled">
+          <% for(var i=0; i<result.length; i++) { %>
+            <li>
+              <a href='todo/item/<%= result[i] %>'>
+                <%= result[i].id %>, <%= result[i].title %>,<%= result[i].description %>
+              </a>
+            </li>
+          <% } %>
+          </ul>
+        </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="/static/js/vendor/react.js"></script>
+  <script type="text/javascript" src="/static/js/browserify/bundle.js"></script>
+</body>
+
+</html>
