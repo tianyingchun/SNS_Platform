@@ -3,12 +3,7 @@ var router = express.Router();
 var helper = require("../../helpers");
 var logger = require("../../helpers/log");
 
-// data provider singleton.
-var dataProvider = require("../../dataProvider");
-// todoService
-var TodoService = dataProvider.getService("Todo");
-
-var todoService = new TodoService();
+var TodoService =require('../../services/TodoService');
 
 /**
  * API:/api/todo/list

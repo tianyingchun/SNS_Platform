@@ -26,7 +26,7 @@ module.exports = function (grunt) {
 
       eslint: './app/**/*{.jsx,.js}',
 
-      reactJsx: './app/**/*.jsx',
+      react_jsx: './app/**/*.jsx',
 
       entry: './app/start.jsx',
       // the bundled destination directory.
@@ -48,15 +48,54 @@ module.exports = function (grunt) {
         '<%= _modules.eslint %>'
       ]
     },
-
-    browserify: {
+    uglify: {
+      //document: https://www.npmjs.com/package/grunt-contrib-uglify
       options: {
         banner: '<%= banner%>',
 
-        external: ['react', 'reflux', 'react-router-component']
+        compress: {
+          // Maybe we can do like below in code:
+          // if we set global_defs.DEBUG==false, it will ignore console.log("xxxxx")
+          // if(DEBUG) {
+          //     console.log("xxxx")
+          // }
+          global_defs: {
+            DEBUG: false
+          },
+          dead_code: true
+        }
+      },
+      // uglify task configuration goes here.
+      // the named <core> `target`
+      prod: {
+        options: {
+          compress: {
+            //Specify drop_console: true as part of the compress options to discard calls to console.* function
+            drop_console: true
+          }
+        },
+        files: {
+          '<%= _modules.vendor_dir %>/react.min.js': '<%= envify.react.dest %>',
+          '<%= _modules.bundle_dir %>/bundle.min.js': '<%= _modules.bundle_dir %>/bundle.js'
+        }
+      }
+    },
+    browserify: {
+      options: {
+        banner: '<%= banner%>',
+      },
+      // Cause of we don't want to build react,reflux libaray to bundle.js
+      // using `external` to ignore it.
+      vendor: {
+        src: [],
+        dest: '<%= _modules.vendor_dir %>/react.js',
+        options: {
+          require: ['react', 'reflux', 'react-router-component']
+        }
       },
       debug: {
         options: {
+          external: ['react', 'reflux', 'react-router-component'],
           browserifyOptions: {
             debug: true,
             entry: '<%= _modules.entry %>'
@@ -67,11 +106,12 @@ module.exports = function (grunt) {
             }]
           ]
         },
-        src: ['<%= _modules.reactJsx%>'],
-        dest: '<%= _modules.bundle_dir%>/bundle.js'
+        src: ['<%= _modules.react_jsx %>'],
+        dest: '<%= _modules.bundle_dir %>/bundle.js'
       },
       prod: {
         options: {
+          external: ['react', 'reflux', 'react-router-component'],
           browserifyOptions: {
             debug: false,
             entry: '<%= _modules.entry %>'
@@ -84,19 +124,32 @@ module.exports = function (grunt) {
             }]
           ]
         },
-        src: ['<%= _modules.reactJsx%>'],
-        dest: '<%= _modules.bundle_dir%>/bundle.js'
+        src: ['<%= _modules.react_jsx %>'],
+        dest: '<%= _modules.bundle_dir %>/bundle.js'
       }
     },
-
+    envify: {
+      // used to remove`process.env.NODE_ENV === "development"`
+      options: {
+        env: {
+          NODE_ENV: 'production'
+        }
+      },
+      // handle react lib process.env.NODE_ENV.
+      react: {
+        src: ['<%= browserify.vendor.dest %>'],
+        dest: '<%= _modules.vendor_dir %>/react-envified.js'
+      }
+    },
     stylus: {
       main: {
         options: {
+          compress: true,
           paths: ['./stylesheets'],
           'include css': true
         },
         src: ['./stylesheets/**/*.styl'],
-        dest: 'public/styles.css'
+        dest: 'public/built/styles.css'
       }
     },
 
@@ -137,7 +190,7 @@ module.exports = function (grunt) {
 
     concurrent: {
       debug: {
-        tasks: ['nodemon:debug', 'watch', 'node-inspector'],
+        tasks: ['nodemon:debug', 'watch' , 'node-inspector' ],
         options: {
           logConcurrentOutput: true
         }
@@ -157,8 +210,11 @@ module.exports = function (grunt) {
 
   require('load-grunt-tasks')(grunt);
 
-  grunt.registerTask('compile', ['eslint', 'browserify:debug', 'stylus']);
-  grunt.registerTask('compile:prod', ['browserify:prod', 'stylus']);
+  grunt.registerTask('vendor', [
+    'browserify:vendor'
+  ]);
+  grunt.registerTask('compile', ['eslint', 'vendor', 'browserify:debug', 'stylus']);
+  grunt.registerTask('compile:prod', ['vendor', 'envify', 'browserify:prod', 'stylus', 'uglify']);
   grunt.registerTask('default', ['compile']);
   grunt.registerTask('server', ['compile', 'concurrent:debug']);
   grunt.registerTask('server:prod', ['compile:prod', 'concurrent:prod']);
