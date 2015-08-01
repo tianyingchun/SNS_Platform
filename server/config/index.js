@@ -2,23 +2,30 @@ var _ = require("underscore");
 
 // site configuration.
 var config = {
-  appName: "isomorphicApp",
-  defaultDataProvider: "mongo" // maybe sqlserver
+  appName: "SNS-Platform",
+  defaultDataProvider: "mysql" // maybe sqlserver
 };
-// web server configuration
-var serverCfg = {
-  local: {
-    mode: "local",
-    port: 3000
+
+// mysql database.
+var db = {
+  database: 'SNS_Platform',
+  username: 'sns',
+  password: '',
+  // db configuration.
+  options: {
+    dialect: 'mysql',
+    host: 'localhost',
+    port: '3307',
+    timezone: '+08:00',
+    logging: console.log
   },
-  production: {
-    mode: "production",
-    port: 4000
+  getTableName: function (tabName) {
+    // Social network marketing platform
+    return 'smp_' + tableName.toLowerCase();
   }
 };
+
 // exports site configuration.
-module.exports = function (mode) {
-  var env = mode || process.argv[2] || 'local';
-  var use = serverCfg[env];
-  return _.extend(use, config);
-};
+module.exports = _.extend({}, config, {
+  db: db
+});
