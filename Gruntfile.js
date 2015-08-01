@@ -1,50 +1,95 @@
 module.exports = function (grunt) {
-
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
-    browserify: {
-      main: {
-        options: {
-          debug: true,
-          transform: ['reactify'],
-          aliasMappings: [
-            {
-              cwd: 'app/views',
-              src: ['**/*.jsx'],
-              dest: 'app/views',
-              rename: function(cwd, src) {
-                // Little hack to ensure that file extension is preserved.
-                var ext = src.split('.').pop();
-                return cwd + '/' + src + '.' + ext;
-              }
-            }
-          ],
-          alias: ['jquery-browserify:jquery'],
-        },
-        files: {
-          'public/scripts.js': 'app/initialize.js',
-        },
+    _modules: {
+
+      cwd: './',
+
+      eslint: './app/**/*{.jsx,.js}',
+
+      reactEntry: './app/start.jsx',
+      // the bundled destination directory.
+      bundle_dir: './public/built/app',
+
+      vendor_dir: './public/built/vendor',
+
+    },
+    eslint: {
+      //http://eslint.org/docs/rules/
+      //https://www.npmjs.com/package/grunt-eslint
+      options: {
+        configFile: '.eslintrc'
+          // outputFile:''
+          // format: require('eslint-tap')
       },
+      react: [
+        // 'Gruntfile.js',
+        '<%= _modules.eslint %>'
+      ]
+    },
+
+    browserify: {
+      options: {
+        external: ['react', 'reflux', 'react-router']
+      },
+      debug: {
+        options: {
+          browserifyOptions: {
+            debug: true,
+            entry: '<%= _modules.entry %>'
+          },
+          transform: [
+            ['reactify', {
+              es6: true
+            }]
+          ]
+        },
+        src: [],
+        dest: '<%= _modules.bundle_dir%>'
+      },
+      prod: {
+        options: {
+          browserifyOptions: {
+            debug: false,
+            entry: '<%= _modules.entry %>'
+          },
+          transform: [
+            envify({
+              NODE_ENV: 'production'
+            }), ['reactify', {
+              es6: true
+            }]
+          ]
+        },
+        src: [],
+        dest: '<%= _modules.bundle_dir%>'
+      }
     },
 
     stylus: {
       main: {
         options: {
-          paths: ['assets/stylesheets'],
+          paths: ['./stylesheets'],
           'include css': true
         },
-        files: {
-          'public/styles.css': 'assets/stylesheets/index.styl'
-        }
+        src: ['/stylesheets/*/*.styl'],
+        dest: 'public/styles.css'
       }
     },
 
     nodemon: {
       main: {},
       debug: {
+        script: './server/bin/www',
         options: {
-          nodeArgs: ['--debug']
+          nodeArgs: ['--debug'],
+          env: {
+            // for development, isomorphic server render react
+            // require the process.env.NODE_ENV =='development' | 'production'
+            NODE_ENV: 'development'
+          },
+          ext: 'js,jsx,html,ejs'
         }
       }
     },
@@ -58,7 +103,7 @@ module.exports = function (grunt) {
         }
       },
       styles: {
-        files: 'assets/stylesheets/**/*',
+        files: './stylesheets/**/*',
         tasks: ['stylus'],
         options: {
           interrupt: true
