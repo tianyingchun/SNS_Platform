@@ -142,14 +142,24 @@ module.exports = function (grunt) {
       }
     },
     stylus: {
+      options: {
+        banner: '<%= banner%>',
+        sourcemap: {
+          comment: true, //Adds a comment with the `sourceMappingURL` to the generated CSS (default: `true`)
+          inline: true, //Inlines the sourcemap with full source text in base64 format (default: `false`)
+          sourceRoot: ".", //"sourceRoot" property of the generated sourcemap
+          basePath: "." //Base path from which sourcemap and all souzrces are relative (default: `.`)
+        }
+      },
       main: {
         options: {
-          compress: true,
           paths: ['./stylesheets'],
           'include css': true
         },
-        src: ['./stylesheets/**/*.styl'],
-        dest: 'public/built/styles.css'
+        files: {
+          'public/built/theme.css': ['theme/**/*.styl'],
+          'public/built/admin.css': ['admin/**/*.styl']
+        }
       }
     },
 
@@ -190,7 +200,7 @@ module.exports = function (grunt) {
 
     concurrent: {
       debug: {
-        tasks: ['nodemon:debug', 'watch' , 'node-inspector' ],
+        tasks: ['nodemon:debug', 'watch', 'node-inspector'],
         options: {
           logConcurrentOutput: true
         }
