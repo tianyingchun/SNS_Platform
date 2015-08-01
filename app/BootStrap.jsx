@@ -1,6 +1,7 @@
 /**
  * @jsx React.DOM
  */
+
 var React = require('react');
 
 // the application entry

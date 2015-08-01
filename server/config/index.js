@@ -6,6 +6,10 @@ var config = {
   defaultDataProvider: "mysql" // maybe sqlserver
 };
 
+// node process configuration
+var node = {
+  port: 3000
+};
 // mysql database.
 var db = {
   database: 'SNS_Platform',
@@ -27,5 +31,6 @@ var db = {
 
 // exports site configuration.
 module.exports = _.extend({}, config, {
-  db: db
+  db: db,
+  node: node
 });

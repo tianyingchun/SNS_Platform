@@ -1,6 +1,24 @@
+var envify = require('envify/custom');
+
 module.exports = function (grunt) {
+  // require it at the top and pass in the grunt instance
+  require('time-grunt')(grunt);
+
+  var banner = [
+    '/**',
+    ' * <%= pkg.name %> <%= pkg.version %>',
+    ' * <%= pkg.homepage %>',
+    ' * Copyright (c) 2015  tianyingchun@outlook.com',
+    ' * <%= pkg.description %>',
+    ' * built on: ' + new Date(),
+    ' */',
+    ''
+  ].join("\n");
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+
+    banner: banner,
 
     _modules: {
 
@@ -8,7 +26,9 @@ module.exports = function (grunt) {
 
       eslint: './app/**/*{.jsx,.js}',
 
-      reactEntry: './app/start.jsx',
+      reactJsx: './app/**/*.jsx',
+
+      entry: './app/start.jsx',
       // the bundled destination directory.
       bundle_dir: './public/built/app',
 
@@ -31,7 +51,9 @@ module.exports = function (grunt) {
 
     browserify: {
       options: {
-        external: ['react', 'reflux', 'react-router']
+        banner: '<%= banner%>',
+
+        external: ['react', 'reflux', 'react-router-component']
       },
       debug: {
         options: {
@@ -45,8 +67,8 @@ module.exports = function (grunt) {
             }]
           ]
         },
-        src: [],
-        dest: '<%= _modules.bundle_dir%>'
+        src: ['<%= _modules.reactJsx%>'],
+        dest: '<%= _modules.bundle_dir%>/bundle.js'
       },
       prod: {
         options: {
@@ -62,8 +84,8 @@ module.exports = function (grunt) {
             }]
           ]
         },
-        src: [],
-        dest: '<%= _modules.bundle_dir%>'
+        src: ['<%= _modules.reactJsx%>'],
+        dest: '<%= _modules.bundle_dir%>/bundle.js'
       }
     },
 
@@ -73,13 +95,12 @@ module.exports = function (grunt) {
           paths: ['./stylesheets'],
           'include css': true
         },
-        src: ['/stylesheets/*/*.styl'],
+        src: ['./stylesheets/**/*.styl'],
         dest: 'public/styles.css'
       }
     },
 
     nodemon: {
-      main: {},
       debug: {
         script: './server/bin/www',
         options: {
@@ -91,6 +112,9 @@ module.exports = function (grunt) {
           },
           ext: 'js,jsx,html,ejs'
         }
+      },
+      prod: {
+        script: './server/bin/www'
       }
     },
 
@@ -112,15 +136,14 @@ module.exports = function (grunt) {
     },
 
     concurrent: {
-      main: {
-        tasks: ['nodemon', 'watch'],
+      debug: {
+        tasks: ['nodemon:debug', 'watch', 'node-inspector'],
         options: {
           logConcurrentOutput: true
         }
       },
-
-      debug: {
-        tasks: ['nodemon:debug', 'watch', 'node-inspector'],
+      prod: {
+        tasks: ['nodemon:prod', 'watch'],
         options: {
           logConcurrentOutput: true
         }
@@ -134,8 +157,9 @@ module.exports = function (grunt) {
 
   require('load-grunt-tasks')(grunt);
 
-  grunt.registerTask('compile', ['browserify', 'stylus']);
+  grunt.registerTask('compile', ['eslint', 'browserify:debug', 'stylus']);
+  grunt.registerTask('compile:prod', ['browserify:prod', 'stylus']);
   grunt.registerTask('default', ['compile']);
-  grunt.registerTask('server', ['compile', 'concurrent']);
-  grunt.registerTask('server:debug', ['compile', 'concurrent:debug']);
+  grunt.registerTask('server', ['compile', 'concurrent:debug']);
+  grunt.registerTask('server:prod', ['compile:prod', 'concurrent:prod']);
 };

@@ -5,7 +5,7 @@
 var _ = require("underscore");
 var path = require('path');
 
-var config = require("../config")();
+var config = require("../config");
 var logger = require("../helpers/log");
 
 /**

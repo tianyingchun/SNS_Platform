@@ -28,7 +28,7 @@ var App = React.createClass({
           </nav>
         </header>
         <div id="page" className="container">
-          {this.props.children || "Welcome to your Inbox"}
+          {this.props.children || 'Welcome to your Inbox'}
         </div>
       </div>
       );
