@@ -34,6 +34,7 @@ module.exports = function (grunt) {
 
       vendor_dir: './public/built/vendor',
 
+      css_dir: 'public/built/styles'
     },
     eslint: {
       //http://eslint.org/docs/rules/
@@ -153,16 +154,30 @@ module.exports = function (grunt) {
       },
       main: {
         options: {
-          paths: ['./stylesheets'],
+          paths: ['./stylesheets/mixins/'],
           'include css': true
         },
         files: {
-          'public/built/theme.css': ['theme/**/*.styl'],
-          'public/built/admin.css': ['admin/**/*.styl']
+          '<%=_modules.css_dir %>/theme.css': './stylesheets/theme/**/*.styl',
+          '<%=_modules.css_dir %>/admin.css': './stylesheets/admin/**/*.styl'
         }
       }
     },
-
+    cssmin: {
+      options: {
+        shorthandCompacting: false,
+        roundingPrecision: -1
+      },
+      prod: {
+        files: [{
+          expand: true,
+          cwd: '<%=_modules.css_dir %>',
+          src: ['*.css', '!*.min.css'],
+          dest: '<%=_modules.css_dir %>',
+          ext: '.min.css'
+        }]
+      }
+    },
     nodemon: {
       debug: {
         script: './server/bin/www',
@@ -224,7 +239,7 @@ module.exports = function (grunt) {
     'browserify:vendor'
   ]);
   grunt.registerTask('compile', ['eslint', 'vendor', 'browserify:debug', 'stylus']);
-  grunt.registerTask('compile:prod', ['vendor', 'envify', 'browserify:prod', 'stylus', 'uglify']);
+  grunt.registerTask('compile:prod', ['vendor', 'envify', 'browserify:prod', 'stylus', 'cssmin', 'uglify']);
   grunt.registerTask('default', ['compile']);
   grunt.registerTask('server', ['compile', 'concurrent:debug']);
   grunt.registerTask('server:prod', ['compile:prod', 'concurrent:prod']);
