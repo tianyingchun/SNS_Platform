@@ -8,7 +8,8 @@ var modelName = 'User';
 
 var attributes = {
   userName: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    field: 'user_name'
   },
   email: {
     type: Sequelize.STRING
@@ -17,10 +18,12 @@ var attributes = {
     type: Sequelize.STRING
   },
   passwordSalt: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    field: 'password_salt'
   },
   adminComment: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    field: 'admin_comment'
   },
   active: {
     type: Sequelize.BOOLEAN
@@ -29,10 +32,12 @@ var attributes = {
     type: Sequelize.BOOLEAN
   },
   isSystemAccount: {
-    type: Sequelize.BOOLEAN
+    type: Sequelize.BOOLEAN,
+    field: 'is_system_account'
   },
   lastIpAddress: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    field: 'last_ip_address'
   }
 };
 // merge base to each model.

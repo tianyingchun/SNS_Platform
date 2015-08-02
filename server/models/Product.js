@@ -8,15 +8,18 @@ var modelName = 'Product';
 var attributes = {
   // seo purpose for product page
   metaTitle: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    field: 'meta_title'
   },
 
   metaKeyword: {
-    type: Sequelize: STRING
+    type: Sequelize: STRING,
+    field: 'meta_keyword'
   },
 
   metaDescription: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    field: 'meta_description'
   },
 
   name: {
@@ -28,6 +31,7 @@ var attributes = {
 
   shortDesc: {
     type: Sequelize.STRING,
+    field: 'short_desc',
     validate: {
       len: [5, 100]
     }
@@ -35,47 +39,56 @@ var attributes = {
 
   fullDesc: {
     type: Sequelize.STRING,
+    field: 'full_desc',
     allowNull: true
   },
 
   adminComment: {
     type: Sequelize.STRING,
+    field: 'admin_comment',
     allowNull: true
   },
 
   availableQuantity: {
     type: Sequelize.NUMBER,
+    field: 'available_quantity',
     defaultValue: -1
   },
 
   availableStartTime: {
     type: Sequelize.DATE,
+    field: 'availble_start_time',
     allowNull: true
   },
 
   availableEndTime: {
     type: Sequelize.DATE,
+    field: 'available_end_time',
     allowNull: true
   },
 
   // 是否允许用户评论
   allowReviews: {
     type: Sequelize.BOOLEAN,
+    field: 'allow_reviews',
     defaultValue: true
   },
 
   totalReviews: {
     type: Sequelize.NUMBER,
+    field: 'total_reviews',
     defaultValue: 0
   },
 
   ratingSum: {
-    type: Sequelize.NUMBER
+    type: Sequelize.NUMBER,
+    field: 'rating_sum',
     defaultValue: 0
   },
 
   displayOrder: {
     type.Sequelize.NUMBER,
+    field: 'display_order',
   },
   published: {
     type: Sequelize.BOOLEAN

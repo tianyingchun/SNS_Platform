@@ -13,13 +13,13 @@ var node = {
 // mysql database.
 var db = {
   database: 'SNS_Platform_Test',
-  username: 'sns',
-  password: '',
+  username: 'root',
+  password: '19861121.lr',
   // db configuration.
   options: {
     dialect: 'mysql',
     host: 'localhost',
-    port: 3306,
+    port: 3307,
     timezone: '+08:00',
     logging: console.log
   },

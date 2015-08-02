@@ -2,8 +2,8 @@
   "name": "SNS_Platform",
   "version": "1.0.0",
   "private": true,
-  "homepage":"http://github.com/tianyingchun",
-  "description":"The  SNS platform application",
+  "homepage": "http://github.com/tianyingchun",
+  "description": "The  SNS platform application",
   "scripts": {
     "start": "NODE_ENV=development node ./server/bin/www",
     "main": "./server/bin/www"
@@ -66,6 +66,7 @@
     "less-plugin-clean-css": "*",
     "load-grunt-tasks": "^3.2.0",
     "matchdep": "^0.3.0",
+    "promise": "^7.0.3",
     "react-tools": "^0.13.3",
     "reactify": "^1.1.1",
     "time-grunt": "^1.2.1",

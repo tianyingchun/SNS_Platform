@@ -11,7 +11,7 @@ var installService = new InstallService();
  * Get all todo items.
  */
 router.get("/initialdb", function (req, res) {
-  installService.initialMysql().then(function () {
+  installService.initialMysql().then(function (result) {
     helper.renderJson(res, result);
   }, function (err) {
     helper.renderJson(res, err);

@@ -12,10 +12,11 @@ function InstallService() {
     sequelize.sync({
       force: true,
       match: /_Test$/
-    }).then(function () {
-      deferred.resolve();
-    }).catch(function (error) {
-      deferred.reject(error);
+    }).then(function (result) {
+      deferred.resolve(result);
+    }).catch(function (err) {
+      logger.error(err);
+      deferred.reject(err);
     });
 
     return deferred.promise;

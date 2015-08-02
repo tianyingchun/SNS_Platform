@@ -7,16 +7,19 @@ var modelName = 'RewardHistory';
 
 var attributes = {
   userId: {
-    type: Sequelize.UUID()
+    type: Sequelize.UUID(),
+    field: 'user_id'
   },
   points: {
     type: Sequelize.NUMBER
   },
   pointsBalance: {
-    type: Sequelize.NUMBER
+    type: Sequelize.NUMBER,
+    field: 'points_balance',
   },
   usedAmount: {
-    type: Sequelize.DECIMAL(10, 2)
+    type: Sequelize.DECIMAL(10, 2),
+    field: 'used_amount'
   },
   message: {
     type: Sequelize.STRING,
