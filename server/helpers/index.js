@@ -52,6 +52,8 @@ module.exports = {
     // first check error.
     if (data && data instanceof Error) {
       return true;
+    } else if (data.status && data.status !== 200) {
+      return true;
     }
     return false;
   },

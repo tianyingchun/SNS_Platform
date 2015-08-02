@@ -1,25 +1,18 @@
 var q = require('Q');
 var logger = require('../helpers/log');
-var sequelize = require('../models/sequelize');
+var sequelizeInitializer = require('../models/initializer');
 
 function InstallService() {
   /**
-   * @return {promise}
+   * initialize mysql database.
    */
-  this.initialMysql = function () {
-    var deferred = q.defer();
+  this.installMysql = function () {
 
-    sequelize.sync({
-      force: true,
-      match: /_Test$/
-    }).then(function (result) {
-      deferred.resolve(result);
-    }).catch(function (err) {
-      logger.error(err);
-      deferred.reject(err);
+    sequelizeInitializer.syncDB().then(function (result) {
+
+    }, function (err) {
+
     });
-
-    return deferred.promise;
   };
 }
 

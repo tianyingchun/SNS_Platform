@@ -10,8 +10,8 @@ var installService = new InstallService();
  * API:/api/isntallation/initialdb
  * Get all todo items.
  */
-router.get("/initialdb", function (req, res) {
-  installService.initialMysql().then(function (result) {
+router.get("/installdb", function (req, res) {
+  installService.installMysql().then(function (result) {
     helper.renderJson(res, result);
   }, function (err) {
     helper.renderJson(res, err);
