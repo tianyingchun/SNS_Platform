@@ -34,6 +34,7 @@ var attributes = {
 _.extend(attributes, base);
 
 var Privilege = sequelize.define(modelName, attributes, {
+  timestamps: true,
   tableName: db.getTableName(modelName)
 });
 

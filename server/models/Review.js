@@ -13,6 +13,7 @@ var attributes = {
 _.extend(attributes, base);
 
 var Review = sequelize.define(modelName, attributes, {
+  timestamps: true,
   tableName: db.getTableName(modelName)
 });
 

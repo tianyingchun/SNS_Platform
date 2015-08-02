@@ -28,6 +28,7 @@ var attributes = {
 _.extend(attributes, base);
 
 var RewardHistory = sequelize.define(modelName, attributes, {
+  timestamps: true,
   tableName: db.getTableName(modelName)
 });
 

@@ -89,6 +89,18 @@ var attributes = {
 _.extend(attributes, base);
 
 var Product = sequelize.define(modelName, attributes, {
+  timestamps: true,
+  comment: 'The products published on site product list', //table comment
+  indexes: [{
+    name: 'display_order',
+    method: 'BTREE',
+    // A BTREE index with a ordered field
+    fields: ['displayOrder', {
+      collate: 'en_US',
+      order: 'DESC',
+      length: 5
+    }]
+  }],
   tableName: db.getTableName(modelName)
 });
 

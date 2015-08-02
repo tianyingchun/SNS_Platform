@@ -1,9 +1,21 @@
 #!/usr/bin/env node
 var nodeConfig = require('../config').node;
 var app = require('../app');
-
+var sequelize = require('../models/sequelize');
+var logger = require('../helpers/log');
 app.set('port', nodeConfig.port || process.env.PORT || 8000);
 
-var server = app.listen(app.get('port'), function() {
-  console.log('Express server listening on port ' + server.address().port);
+// This will run .sync() only if database name ends with '_test'
+sequelize.sync({ force: true, match: /_Test$/ }).then(function () {
+
+  logger.debug('sequelize sync successfully!');
+
+  var server = app.listen(app.get('port'), function() {
+    logger.info('Express server listening on port ' + server.address().port);
+  });
+
+}).catch(function(error) {
+  logger.error(error);
+  console.log(error);
 });
+

@@ -12,14 +12,14 @@ var node = {
 };
 // mysql database.
 var db = {
-  database: 'SNS_Platform',
+  database: 'SNS_Platform_Test',
   username: 'sns',
   password: '',
   // db configuration.
   options: {
     dialect: 'mysql',
     host: 'localhost',
-    port: '3307',
+    port: 3306,
     timezone: '+08:00',
     logging: console.log
   },
