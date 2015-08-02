@@ -23,5 +23,19 @@ module.exports = {
     var cryptkey = crypto.createHash('sha256').update(secret).digest();
 
     return _decryptDES(cryptkey, '1234567890000000', data);
+  },
+  md5: function (data) {
+    var md5 = crypto.createHash('md5');
+    md5.update(str);
+    return md5.digest('hex');
+  },
+  random: function (min, max) {
+    if (arguments.length == 1) {
+      max = min;
+      min = 0;
+    }
+    var range = max - min;
+    var rand = Math.random();
+    return min + Math.round(rand * range);
   }
 };

@@ -10,11 +10,16 @@ var config = {
 var node = {
   port: 3000
 };
+
+// security configuration.
+var security = {
+  saltCode: 'SPM'
+};
 // mysql database.
 var db = {
   database: 'SNS_Platform_Test',
-  username: 'root',
-  password: '19861121.lr',
+  username: 'sns',
+  password: 'sns',
   // db configuration.
   options: {
     dialect: 'mysql',
@@ -32,5 +37,6 @@ var db = {
 // exports site configuration.
 module.exports = _.extend({}, config, {
   db: db,
-  node: node
+  node: node,
+  security: security
 });
