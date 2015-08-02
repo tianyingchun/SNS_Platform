@@ -11,10 +11,10 @@ var attributes = {
     field: 'user_id'
   },
   points: {
-    type: Sequelize.NUMBER
+    type: Sequelize.INTEGER
   },
   pointsBalance: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
     field: 'points_balance',
   },
   usedAmount: {

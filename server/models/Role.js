@@ -6,7 +6,24 @@ var db = require('../config').db;
 var modelName = 'Role';
 
 var attributes = {
-
+  name: {
+    type: Sequelize.STRING,
+    unique: true
+  },
+  active: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
+  },
+  isSystemRole: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+    field: 'is_system_role'
+  },
+  systemName: {
+    type: Sequelize.STRING,
+    allowNull: true,
+    filed: 'system_name'
+  }
 };
 
 // merge base to each model.

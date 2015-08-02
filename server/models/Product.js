@@ -50,7 +50,7 @@ var attributes = {
   },
 
   availableQuantity: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
     field: 'available_quantity',
     defaultValue: -1
   },
@@ -75,20 +75,21 @@ var attributes = {
   },
 
   totalReviews: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
     field: 'total_reviews',
     defaultValue: 0
   },
 
   ratingSum: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
     field: 'rating_sum',
     defaultValue: 0
   },
 
   displayOrder: {
-    type.Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
     field: 'display_order',
+    defaultValue: 0
   },
   published: {
     type: Sequelize.BOOLEAN
