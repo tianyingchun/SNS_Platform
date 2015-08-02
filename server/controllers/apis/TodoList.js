@@ -5,6 +5,7 @@ var logger = require("../../helpers/log");
 
 var TodoService =require('../../services/TodoService');
 
+var todoService = new TodoService();
 /**
  * API:/api/todo/list
  * Get all todo items.

@@ -215,7 +215,7 @@ module.exports = function (grunt) {
 
     concurrent: {
       debug: {
-        tasks: ['nodemon:debug', 'watch', 'node-inspector'],
+        tasks: ['nodemon:debug', 'watch'/*, 'node-inspector'*/],
         options: {
           logConcurrentOutput: true
         }

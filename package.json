@@ -59,7 +59,6 @@
     "grunt-env": "^0.4.4",
     "grunt-envify": "0.0.2",
     "grunt-eslint": "^17.0.0",
-    "grunt-node-inspector": "*",
     "grunt-nodemon": "^0.4.0",
     "grunt-react": "^0.12.2",
     "grunt-stylus-map": "^0.21.2",

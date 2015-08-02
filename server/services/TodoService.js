@@ -1,12 +1,19 @@
 var logger = require('../helpers/log');
-
-function TodoServiceProvider() {
+var q = require('Q');
+function TodoService() {
   /**
    * @return {promise}
    */
   this.getTodoList = function () {
-    return [];
+    var deferred = q.defer();
+    deferred.resolve([
+      {id:'111', title:'title1', description:'description1'},
+      {id:'111', title:'title1', description:'description1'},
+      {id:'111', title:'title1', description:'description1'},
+      {id:'111', title:'title1', description:'description1'}
+    ]);
+    return deferred.promise;
   };
 }
 
-module.exports = TodoServiceProvider;
+module.exports = TodoService;

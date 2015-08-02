@@ -1,7 +1,9 @@
 var logger = require("../helpers/log");
 var helper = require("../helpers");
 var ApiTodoList = require('../controllers/apis/TodoList');
+var ApiInstallation = require('../controllers/apis/Installation');
 var TodoList = require('../controllers/TodoList');
+
 var _app = null;
 
 module.exports = {
@@ -26,6 +28,7 @@ module.exports = {
     // });
 
     _app.use("/api/todo", ApiTodoList);
+    _app.use("/api/installation", ApiInstallation);
     //
     _app.use("/todo", TodoList);
 
