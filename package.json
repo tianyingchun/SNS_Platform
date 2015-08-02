@@ -2,6 +2,8 @@
   "name": "SNS_Platform",
   "version": "1.0.0",
   "private": true,
+  "homepage":"http://github.com/tianyingchun",
+  "description":"The  SNS platform application",
   "scripts": {
     "start": "NODE_ENV=development node ./server/bin/www",
     "main": "./server/bin/www"

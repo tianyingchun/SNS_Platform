@@ -5,7 +5,7 @@ module.exports = function (grunt) {
   require('time-grunt')(grunt);
 
   var banner = [
-    '/**',
+    '/*!',
     ' * <%= pkg.name %> <%= pkg.version %>',
     ' * <%= pkg.homepage %>',
     ' * Copyright (c) 2015  tianyingchun@outlook.com',
@@ -235,9 +235,7 @@ module.exports = function (grunt) {
 
   require('load-grunt-tasks')(grunt);
 
-  grunt.registerTask('vendor', [
-    'browserify:vendor'
-  ]);
+  grunt.registerTask('vendor', ['browserify:vendor']);
   grunt.registerTask('compile', ['eslint', 'vendor', 'browserify:debug', 'stylus']);
   grunt.registerTask('compile:prod', ['vendor', 'envify', 'browserify:prod', 'stylus', 'cssmin', 'uglify']);
   grunt.registerTask('default', ['compile']);
