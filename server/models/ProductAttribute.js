@@ -3,19 +3,26 @@ var Sequelize = require('sequelize');
 var sequelize = require('./sequelize');
 var base = require('./base');
 var db = require('../config').db;
-var modelName = 'Review';
+var modelName = 'ProductAttribute';
 
 var attributes = {
+  // seo purpose for productAttribute page
+  name: {
+    type: Sequelize.STRING
+  },
 
+  description: {
+    type: Sequelize: STRING
+  }
 };
 
 // merge base to each model.
 _.extend(attributes, base);
 
-var Review = sequelize.define(modelName, attributes, {
+var ProductAttribute = sequelize.define(modelName, attributes, {
   timestamps: true,
   tableName: db.getTableName(modelName),
   underscored: true
 });
 
-module.exports = Review;
+module.exports = ProductAttribute;

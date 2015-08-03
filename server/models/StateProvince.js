@@ -31,7 +31,8 @@ _.extend(attributes, base);
 
 var StateProvince = sequelize.define(modelName, attributes, {
   // timestamps: true,
-  tableName: db.getTableName(modelName)
+  tableName: db.getTableName(modelName),
+  underscored: true
 });
 
 module.exports = StateProvince;

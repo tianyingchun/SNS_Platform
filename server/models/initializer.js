@@ -1,11 +1,8 @@
 var _ = require('lodash');
-var sequelize = require('./sequelize');
 
 // require all data model schema here.
-var User = require('./User');
-var Profile = require('./Profile.js');
+var association = require('./association');
 //
-
 
 var syncOptions = {
   force: true,

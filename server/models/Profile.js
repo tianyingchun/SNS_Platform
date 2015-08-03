@@ -24,6 +24,9 @@ var attributes = {
   sex: {
     type: Sequelize.STRING,
     field: 'last_name'
+  },
+  birthday: {
+    type: Sequelize.DATE
   }
 };
 // merge base to each model.
@@ -46,10 +49,9 @@ var Profile = sequelize.define(modelName, attributes, {
       this.setDataValue('firstName', names[0] || "");
       this.setDataValue('lastName', names[1]) || "";
     }
-  }
+  },
+  underscored: true
 
 });
-
-Profile.belongsTo(User);
 
 module.exports = Profile;

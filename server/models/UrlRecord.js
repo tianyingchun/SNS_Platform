@@ -3,36 +3,36 @@ var Sequelize = require('sequelize');
 var sequelize = require('./sequelize');
 var base = require('./base');
 var db = require('../config').db;
-var User = require('./User');
-var modelName = 'Role';
+var modelName = 'UrlRecord';
 
 var attributes = {
-  name: {
+  // url
+  slug: {
+    type: Sequelize.STRING
+  },
+  entityId: {
+    type: Sequelize.INTEGER,
+    field: 'entity_id'
+  },
+  // Product, Category ,ProductTag...
+  entityName: {
     type: Sequelize.STRING,
-    unique: true
+    field: 'entity_type'
   },
   active: {
     type: Sequelize.BOOLEAN,
-    defaultValue: false
-  },
-  isSystemRole: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: false,
-    field: 'is_system_role'
-  },
-  systemName: {
-    type: Sequelize.STRING,
-    allowNull: true,
-    filed: 'system_name'
+    field: 'entity_type',
+    defaultValue: true
   }
 };
 
 // merge base to each model.
 _.extend(attributes, base);
 
-var Role = sequelize.define(modelName, attributes, {
+var UrlRecord = sequelize.define(modelName, attributes, {
   tableName: db.getTableName(modelName),
   underscored: true
 });
 
-module.exports = Role;
+
+module.exports = UrlRecord;

@@ -25,7 +25,7 @@ var attributes = {
   name: {
     type: Sequelize.STRING,
     validate: {
-      len: [10, 50]
+      len: [10, 200]
     }
   },
 
@@ -33,14 +33,43 @@ var attributes = {
     type: Sequelize.STRING,
     field: 'short_desc',
     validate: {
-      len: [5, 100]
+      len: [0, 200]
     }
   },
 
   fullDesc: {
-    type: Sequelize.STRING,
+    type: Sequelize.TEXT,
     field: 'full_desc',
     allowNull: true
+  },
+
+  //0: 虚拟产品 （点券）
+  //1：实物产品，暂时靠商家自己去给用户发货，他需要描述到name, fullDesc.
+  productType: {
+    type: Sequelize.INTEGER,
+    field: 'product_type',
+    defaultValue: 0
+  },
+
+  // 当期商品的实际价值
+  price: {
+    type: Sequelize.DECIMAL(2, 10),
+    allowNull: true,
+    defaultValue: 0
+  },
+
+  // 申请当前产品的需要消耗的账户点(Rewards Point)，默认一般都是免费得
+  needSpendPrice: {
+    type: Sequelize.DECIMAL(2, 10),
+    defaultValue: 0,
+    field: 'need_spend_price'
+  },
+
+  // 设置一个获得这个产品的门槛，比如100，用户所有的TASK 的reward 之和达到了这个数值
+  // 他就可以获得这个产品
+  threshold: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0
   },
 
   adminComment: {
@@ -52,7 +81,13 @@ var attributes = {
   availableQuantity: {
     type: Sequelize.INTEGER,
     field: 'available_quantity',
-    defaultValue: -1
+    defaultValue: 0
+  },
+
+  stockQuantity: {
+    type: Sequelize.INTEGER,
+    field: 'stock_quantity',
+    defaultValue: 0
   },
 
   availableStartTime: {
@@ -74,15 +109,16 @@ var attributes = {
     defaultValue: true
   },
 
+  // 0-100
   totalReviews: {
     type: Sequelize.INTEGER,
     field: 'total_reviews',
     defaultValue: 0
   },
 
-  ratingSum: {
+  averageRating: {
     type: Sequelize.INTEGER,
-    field: 'rating_sum',
+    field: 'average_rating',
     defaultValue: 0
   },
 
@@ -91,9 +127,11 @@ var attributes = {
     field: 'display_order',
     defaultValue: 0
   },
+
   published: {
     type: Sequelize.BOOLEAN
   },
+
   deleted: {
     type: Sequelize.BOOLEAN
   }
@@ -104,7 +142,6 @@ _.extend(attributes, base);
 
 var Product = sequelize.define(modelName, attributes, {
   timestamps: true,
-  comment: 'The products published on site product list', //table comment
   indexes: [{
     name: 'display_order',
     method: 'BTREE',
@@ -115,7 +152,8 @@ var Product = sequelize.define(modelName, attributes, {
       length: 5
     }]
   }],
-  tableName: db.getTableName(modelName)
+  tableName: db.getTableName(modelName),
+  underscored: true
 });
 
 module.exports = Product;

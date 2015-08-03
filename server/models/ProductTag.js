@@ -9,8 +9,9 @@ var modelName = 'ProductTag';
 var attributes = {
   name: {
     type: Sequelize.STRING,
+    unique: true,
     validate: {
-      len: [2, 20]
+      len: [2, 50]
     }
   }
 };
@@ -19,7 +20,8 @@ var attributes = {
 _.extend(attributes, base);
 
 var ProductTag = sequelize.define(modelName, attributes, {
-  tableName: db.getTableName(modelName)
+  tableName: db.getTableName(modelName),
+  underscored: true
 });
 
 module.exports = ProductTag;

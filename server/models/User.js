@@ -38,7 +38,8 @@ var attributes = {
   },
   isSystemAccount: {
     type: Sequelize.BOOLEAN,
-    field: 'is_system_account'
+    field: 'is_system_account',
+    defaultValue: false
   },
   lastIpAddress: {
     type: Sequelize.STRING,
@@ -54,7 +55,7 @@ var User = sequelize.define(modelName, attributes, {
 
   // Foreign keys
   // The default casing is camelCase however if the source model is configured with underscored: true
-  underscored: true,
+  underscored: true
 });
 
 module.exports = User;
