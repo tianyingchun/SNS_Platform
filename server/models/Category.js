@@ -13,7 +13,7 @@ var attributes = {
   },
 
   metaKeyword: {
-    type: Sequelize: STRING,
+    type: Sequelize.STRING,
     field: 'meta_keyword'
   },
 

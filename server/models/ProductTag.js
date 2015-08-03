@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var Sequelize = require('sequelize');
 var sequelize = require('./sequelize');
-var base = require('./bae');
+var base = require('./base');
 var db = require('../config').db;
 var modelName = 'ProductTag';
 

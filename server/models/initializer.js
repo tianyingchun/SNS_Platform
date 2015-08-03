@@ -1,7 +1,7 @@
 var _ = require('lodash');
 
 // require all data model schema here.
-var association = require('./association');
+var sequelize = require('./association');
 //
 
 var syncOptions = {

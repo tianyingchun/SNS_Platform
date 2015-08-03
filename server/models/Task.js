@@ -20,7 +20,7 @@ var attributes = {
   },
 
   reward: {
-    type: Sequelize.DECIMAL(2, 10),
+    type: Sequelize.DECIMAL(10, 2),
     defaultValue: 0
   },
 

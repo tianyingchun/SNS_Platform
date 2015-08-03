@@ -12,7 +12,7 @@ var attributes = {
   },
 
   description: {
-    type: Sequelize: STRING
+    type: Sequelize.STRING
   }
 };
 

@@ -2,8 +2,7 @@ var _ = require('lodash');
 var Sequelize = require('sequelize');
 var sequelize = require('./sequelize');
 var base = require('./base');
-var config = require('../config');
-var db = config.db;
+var db = require('../config').db;
 var security = require('../services/securityService');
 
 var modelName = 'User';

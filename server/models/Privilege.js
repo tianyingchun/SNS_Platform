@@ -19,7 +19,7 @@ var attributes = {
     field: 'privilege_target',
     // maybe we should define some role operation type.
     // Application, menus, buttons.
-    values: []
+    values: ['Application']
   },
   // this filed used to store current privilege settings.
   // it should be json string.

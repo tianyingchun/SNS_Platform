@@ -13,7 +13,7 @@ var attributes = {
   },
 
   metaKeyword: {
-    type: Sequelize: STRING,
+    type: Sequelize.STRING,
     field: 'meta_keyword'
   },
 
@@ -53,14 +53,14 @@ var attributes = {
 
   // 当期商品的实际价值
   price: {
-    type: Sequelize.DECIMAL(2, 10),
+    type: Sequelize.DECIMAL(10, 2),
     allowNull: true,
     defaultValue: 0
   },
 
   // 申请当前产品的需要消耗的账户点(Rewards Point)，默认一般都是免费得
   needSpendPrice: {
-    type: Sequelize.DECIMAL(2, 10),
+    type: Sequelize.DECIMAL(10, 2),
     defaultValue: 0,
     field: 'need_spend_price'
   },
@@ -142,16 +142,6 @@ _.extend(attributes, base);
 
 var Product = sequelize.define(modelName, attributes, {
   timestamps: true,
-  indexes: [{
-    name: 'display_order',
-    method: 'BTREE',
-    // A BTREE index with a ordered field
-    fields: ['displayOrder', {
-      collate: 'en_US',
-      order: 'DESC',
-      length: 5
-    }]
-  }],
   tableName: db.getTableName(modelName),
   underscored: true
 });

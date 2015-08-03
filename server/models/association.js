@@ -7,7 +7,7 @@ var Role = require('./Role');
 var Privilege = require('./Privilege');
 var Profile = require('./Profile');
 var Country = require('./Country');
-var StateProvince = reqauire('./StateProvince');
+var StateProvince = require('./StateProvince');
 
 Role.belongsToMany(User, {through: 'user_role'});
 User.belongsToMany(Role, {through:'user_role'});
@@ -17,17 +17,17 @@ Profile.belongsTo(User);
 // Product  //
 //-----------------------------------------//
 var Product = require('./Product');
-var ProductAttribute = require('./ProductAttribute');
-var ProductAttributeValue = require('./ProductAttributeValue');
+// var ProductAttribute = require('./ProductAttribute');
+// var ProductAttributeValue = require('./ProductAttributeValue');
 var ProductTag = require('./ProductTag');
 var Category = require('./Category');
 
 // One-to-many association,category.getProducts().
-Category.belongsToMany(Product, {throught: 'category_product'});
-Product.belongsToMany(Category, {throught: 'category_product'});
+Category.belongsToMany(Product, {through: 'category_product'});
+Product.belongsToMany(Category, {through: 'category_product'});
 
-ProductTag.belongsToMany(Product, {throught: 'product_tag_mapping'});
-Product.belongsToMany(ProductTag, {throught: 'product_tag_mapping'});
+ProductTag.belongsToMany(Product, {through: 'product_tag_mapping'});
+Product.belongsToMany(ProductTag, {through: 'product_tag_mapping'});
 
 User.hasMany(Product);
 
