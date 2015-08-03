@@ -1,9 +1,9 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var sequelize = require('./sequelize');
 
 // require all data model schema here.
-// var User = require('./User');
-
+var User = require('./User');
+var Profile = require('./Profile.js');
 //
 
 
@@ -20,10 +20,6 @@ module.exports = {
    */
   syncDB: function (options) {
     var sync = _.extend({}, syncOptions, options);
-    return sequelize.sync(sync).then(function (result) {
-
-    }, function (err) {
-
-    });
+    return sequelize.sync(sync);
   }
 };

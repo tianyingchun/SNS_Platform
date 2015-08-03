@@ -2,7 +2,7 @@
  * Provider base util function for all child controller.
  * @type {[type]}
  */
-var _ = require("underscore");
+var _ = require("lodash");
 var path = require('path');
 
 var config = require("../config");

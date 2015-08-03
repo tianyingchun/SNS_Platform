@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var Sequelize = require('sequelize');
 var sequelize = require('./sequelize');
 var base = require('./base');
@@ -8,15 +8,9 @@ var security = require('../services/securityService');
 
 var modelName = 'User';
 
-
 var attributes = {
-  firstName: {
-    type: Sequelize.STRING,
-    field: 'first_name'
-  },
-  lastName: {
-    type: Sequelize.STRING,
-    field: 'last_name'
+  username: {
+    type: Sequelize.STRING
   },
   email: {
     type: Sequelize.STRING
@@ -34,15 +28,7 @@ var attributes = {
   passwordSalt: {
     type: Sequelize.STRING,
     field: 'password_salt',
-    defaultValue: security.getDefaultSalt(),
-    allowNull: true,
-    set: function (val) {
-      // FIXME do nothing, don't need manully update password salt.
-    }
-  },
-  adminComment: {
-    type: Sequelize.STRING,
-    field: 'admin_comment'
+    allowNull: true
   },
   active: {
     type: Sequelize.BOOLEAN
@@ -68,22 +54,7 @@ var User = sequelize.define(modelName, attributes, {
 
   // Foreign keys
   // The default casing is camelCase however if the source model is configured with underscored: true
-  underscored： true,
-
-  getterMethods: {
-    // define virtual attribute,are not actually part of your database schema
-    fullName: function () {
-      return this.firstName + ' ' + this.lastName;
-    }
-  },
-  setterMethods: {
-    fullName: function (val) {
-      // Note. the virtual setter method have no validate() method.
-      var names = (val || "").split(' ');
-      this.setDataValue('firstName', names[0] || "");
-      this.setDataValue('lastName', names[1]) || "";
-    }
-  }
+  underscored: true,
 });
 
 module.exports = User;

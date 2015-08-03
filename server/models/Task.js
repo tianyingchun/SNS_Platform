@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var Sequelize = require('sequelize');
 var sequelize = require('./sequelize');
 var base = require('./base');
@@ -16,10 +16,10 @@ _.extend(attributes, base);
 var Task = sequelize.define(modelName, attributes, {
   timestamps: true,
   tableName: db.getTableName(modelName),
-  underscored: true
+  lodashd: true
 });
 
-//Will add user_id to Task, use {underscored: true}
+//Will add user_id to Task, use {lodashd: true}
 Task.belongsTo(User);
 
 module.exports = Task;

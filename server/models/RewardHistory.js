@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var Sequelize = require('sequelize');
 var sequelize = require('./sequelize');
 var base = require('./base');

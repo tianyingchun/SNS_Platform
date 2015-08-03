@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+var init = require('../models/initializer.js');
+
+init.syncDB().then(function (result) {
+  console.log('result:', result);
+}).catch(function (e) {
+  console.log('error:', e);
+});
