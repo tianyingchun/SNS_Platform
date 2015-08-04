@@ -1,5 +1,6 @@
 // require all data model schema here.
 var sequelize = require('./sequelize');
+var db = require('./config').db;
 // User     //
 //-----------------------------------------//
 var User = require('./User');
@@ -9,8 +10,9 @@ var Profile = require('./Profile');
 var Country = require('./Country');
 var StateProvince = require('./StateProvince');
 
-Role.belongsToMany(User, {through: 'user_role'});
-User.belongsToMany(Role, {through:'user_role'});
+var UserRole = db.getTableName('user_role');
+Role.belongsToMany(User, {through: UserRole});
+User.belongsToMany(Role, {through: UserRole});
 
 Profile.belongsTo(User);
 
@@ -22,12 +24,14 @@ var Product = require('./Product');
 var ProductTag = require('./ProductTag');
 var Category = require('./Category');
 
+var CategoryProduct = db.getTableName('category_product');
 // One-to-many association,category.getProducts().
-Category.belongsToMany(Product, {through: 'category_product'});
-Product.belongsToMany(Category, {through: 'category_product'});
+Category.belongsToMany(Product, {through: CategoryProduct});
+Product.belongsToMany(Category, {through: CategoryProduct});
 
-ProductTag.belongsToMany(Product, {through: 'product_tag_mapping'});
-Product.belongsToMany(ProductTag, {through: 'product_tag_mapping'});
+var ProductTagMapping = db.getTableName('product_tag_mapping');
+ProductTag.belongsToMany(Product, {through: ProductTagMapping});
+Product.belongsToMany(ProductTag, {through: ProductTagMapping});
 
 User.hasMany(Product);
 
