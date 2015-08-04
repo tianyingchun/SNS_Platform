@@ -28,7 +28,7 @@ var attributes = {
     field: 'privilege_value'
   },
   // current privilige status true ==> enabled.
-  activated: {
+  active: {
     type: Sequelize.BOOLEAN,
     defaultValue: true
   }
