@@ -1,35 +1,36 @@
 var _ = require('lodash');
 var logger = require('../helpers/log');
+var sequelize = require('../models/sequelize');
+var systemRoleNames = require('./emun/systemRoleNames');
 
-var systemCustomerRoleNames = require('../models/emun/systemCustomerRoleNames');
 
-function UserService(userIntance) {
-  // user model instance.
-  this.user = userIntance;
+function UserService() {
 
-  this.isInCustomerRole = function (customerRoleSystemName, onlyActiveCustomerRoles) {
-
-    onlyActiveCustomerRoles =
-      _.isUndefined(onlyActiveCustomerRoles) ? true : onlyActiveCustomerRoles;
-
-    // TODO.
-
-  };
-  this.isAdmin = function (onlyActiveCustomerRoles) {
-    return this.isInCustomerRole(systemCustomerRoleNames.Administrators, onlyActiveCustomerRoles);
-  };
-
-  this.isRegistered = function (onlyActiveCustomerRoles) {
-    return this.isInCustomerRole(systemCustomerRoleNames.Registered, onlyActiveCustomerRoles);
-  };
-
-  this.isGuest = function (onlyActiveCustomerRoles) {
-    return this.isInCustomerRole(systemCustomerRoleNames.Guests, onlyActiveCustomerRoles);
-  };
-
-  this.getRewardPointsBalance = function () {
-    // TODO
-  };
 }
+_.extend(UserService, {
+  /**
+   * Find user model instance
+   * @param  {Number} userId userId
+   * @return {Promise}
+   */
+  findUser: function (userId) {
+
+  },
+  isInCustomerRole: function (roleSystemName, onlyActivedRoles) {
+    onlyActivedRoles =
+      _.isUndefined(onlyActivedRoles) ? true : onlyActivedRoles;
+    //TODO
+  },
+  isAdmin: function (onlyActivedRoles, onlyActivedRoles) {
+    return this.isInCustomerRole(systemRoleNames.Administrators, onlyActivedRoles);
+  },
+  isRegistered: function (onlyActivedRoles, onlyActivedRoles) {
+    return this.isInCustomerRole(systemRoleNames.Registered, onlyActivedRoles);
+  },
+  isGuest: function (onlyActivedRoles) {
+    return this.isInCustomerRole(systemRoleNames.Guests, onlyActivedRoles);
+  }
+
+});
 
 module.exports = UserService;

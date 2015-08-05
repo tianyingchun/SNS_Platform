@@ -11,4 +11,3 @@ var OrderStatus = lang.createEnum(
 );
 
 module.exports = OrderStatus;
-
