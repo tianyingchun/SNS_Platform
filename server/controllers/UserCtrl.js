@@ -2,10 +2,27 @@ var express = require('express');
 var router = express.Router();
 var userService = require('../services/UserService.js');
 
+var UserCtrl = {
 
-router.get('/:id', userService.findUserById);
-/**
- * [exports description]
- * @type {[type]}
- */
-module.exports = router;
+  index: function () {
+
+  },
+
+  show: function () {
+
+  },
+
+  create: function () {
+
+  },
+
+  update: function () {
+
+  },
+
+  delete: function () {
+
+  }
+};
+
+module.exports = UserCtrl;

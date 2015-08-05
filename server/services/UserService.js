@@ -1,7 +1,7 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var logger = require('../helpers/log');
-var sequelize = require('../models/sequelize');
-var systemCustomerRoleNames = require('./emun/systemCustomerRoleNames');
+
+var systemCustomerRoleNames = require('../models/emun/systemCustomerRoleNames');
 
 function UserService(userIntance) {
   // user model instance.

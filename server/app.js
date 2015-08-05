@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var compress = require('compression');
 var morgan = require('morgan');
+var cors = require('cors');
 var errorhandler = require('errorhandler');
 var config = require('./config');
 var router = require('./config/router');
@@ -30,7 +31,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
-app.user(compress());
+app.use(compress());
 // express.static.mime.define({
 //  'text/xml': ['plist']
 // });

@@ -1,4 +1,3 @@
-var cors = require('cors');
 var router = require('express').Router();
 
 var ProductCtrl = require('../controllers/ProductCtrl');
@@ -6,26 +5,26 @@ var UserCtrl = require('../controllers/UserCtrl');
 
 
 /** get all products */
-router.get('/products', );
+router.get('/products', ProductCtrl.index);
 /** get a product by id */
-router.get('/products/:id', productService.findProductById);
+router.get('/products/:id', ProductCtrl.show);
 /** create a product*/
-router.post('/products', productService.createProduct);
+router.post('/products', ProductCtrl.create);
 /** udpate a product by id */
-router.put('/products/:id', productService.updateProduct);
+router.put('/products/:id', ProductCtrl.update);
 /** delete a product by id */
-router.delete('/products/:id', productService.deleteProduct);
+router.delete('/products/:id', ProductCtrl.delete);
 
 /** get all users */
-router.get('/users', );
+router.get('/users', UserCtrl.index);
 /** get a user by id */
-router.get('/users/:id', userervice.findUserById);
+router.get('/users/:id', UserCtrl.show);
 /** create a user*/
-router.post('/users', userervice.createUser);
+router.post('/users', UserCtrl.create);
 /** udpate a user by id */
-router.put('/users/:id', userervice.updateUser);
+router.put('/users/:id', UserCtrl.update);
 /** delete a user by id */
-router.delete('/users/:id', userervice.deleteUser);
+router.delete('/users/:id', UserCtrl.delete);
 
 
 
