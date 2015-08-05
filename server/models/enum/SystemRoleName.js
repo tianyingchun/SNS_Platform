@@ -1,4 +1,4 @@
-var lang = require('../../helpers/lang');
+var lang = require('../../common/lang');
 
 var SystemRoleName = lang.createEnum(
   [

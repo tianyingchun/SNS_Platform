@@ -1,7 +1,7 @@
 var router = require('express').Router();
 
-var ProductCtrl = require('../controllers/ProductCtrl');
-var UserCtrl = require('../controllers/UserCtrl');
+var ProductCtrl = require('./controllers/ProductCtrl');
+var UserCtrl = require('./controllers/UserCtrl');
 
 
 /** get all products */

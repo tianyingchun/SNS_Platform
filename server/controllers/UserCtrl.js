@@ -1,6 +1,4 @@
-var express = require('express');
-var router = express.Router();
-var userService = require('../services/UserService.js');
+var UserService = require('../services/UserService.js');
 
 var UserCtrl = {
 

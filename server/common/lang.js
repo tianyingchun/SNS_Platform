@@ -36,7 +36,7 @@ module.exports = {
    * @param  {[type]} format [description]
    * @return {[type]}        [description]
    */
-  formatDate: function (data, format) {
+  formatDate: function (date, format) {
 
     function Appendzero(obj) {
       if (obj < 10) return "0" + "" + obj;

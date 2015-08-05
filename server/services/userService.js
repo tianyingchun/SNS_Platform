@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var logger = require('../common/log');
-var systemRoleName = require('../models/emun/SystemRoleName');
+var systemRoleName = require('../models/enum/SystemRoleName');
 
 var userService = {
   /**
@@ -12,8 +12,7 @@ var userService = {
 
   },
   isInCustomerRole: function (roleSystemName, onlyActivedRoles) {
-    onlyActivedRoles =
-      _.isUndefined(onlyActivedRoles) ? true : onlyActivedRoles;
+    onlyActivedRoles = _.isUndefined(onlyActivedRoles) ? true : onlyActivedRoles;
     //TODO
   },
   isAdmin: function (onlyActivedRoles, onlyActivedRoles) {

@@ -1,7 +1,4 @@
-var express = require('express');
-var router = express.Router();
-
-var productService = require('../services/ProductService.js');
+var ProductService = require('../services/ProductService.js');
 
 var ProductCtrl = {
   index: function (req, res) {

@@ -8,7 +8,7 @@ var morgan = require('morgan');
 var cors = require('cors');
 var errorhandler = require('errorhandler');
 var config = require('./config');
-var router = require('./config/router');
+var router = require('./router');
 var debug = require('debug')(config.appName);
 
 //For requiring `.jsx` files as Node modules

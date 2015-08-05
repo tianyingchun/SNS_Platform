@@ -2,7 +2,7 @@
 var winston = require('winston');
 var fs = require("fs-extra");
 var path = require("path");
-var dateFormat = require("./dateformat");
+var lang = require("./lang");
 
 winston.emitErrs = false;
 // data provider singleton.
@@ -12,7 +12,7 @@ if (logdir) {
   fs.ensureDirSync(logdir);
 }
 // make log files with current day.
-var _filename = path.join(logdir, dateFormat(new Date(), "YYYY-MM-DD") + ".log");
+var _filename = path.join(logdir, lang.formatDate(new Date(), "YYYY-MM-DD") + ".log");
 
 fs.ensureFileSync(_filename);
 
