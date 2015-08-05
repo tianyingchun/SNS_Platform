@@ -52,6 +52,7 @@ var User = sequelize.define(modelName, attributes, {
   // timestamps: true,
   tableName: db.getTableName(modelName),
 
+  timestamps: true,
   // Foreign keys
   // The default casing is camelCase however if the source model is configured with underscored: true
   underscored: true

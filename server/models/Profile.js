@@ -50,7 +50,9 @@ var Profile = sequelize.define(modelName, attributes, {
       this.setDataValue('lastName', names[1]) || "";
     }
   },
-  underscored: true
+  underscored: true,
+
+  timestamps: true
 
 });
 

@@ -2,15 +2,31 @@ var _ = require('lodash');
 var logger = require('../common/log');
 var systemRoleName = require('../models/enum/SystemRoleName');
 
-var userService = {
+var UserService = {
   /**
-   * Find user model instance
-   * @param  {Number} userId userId
-   * @return {Promise}
+   * register an new user
+   * @param  {Object} user User info
+   * @return {promise}
    */
+  signup: function (user) {
+
+  },
+
+  // Login with username, password
+  signin: function (username, password) {
+
+  },
+
+  // Log out current session.
+  signout: function () {
+
+  },
+
+  // Find user model instance
   findUser: function (userId) {
 
   },
+
   isInCustomerRole: function (roleSystemName, onlyActivedRoles) {
     onlyActivedRoles = _.isUndefined(onlyActivedRoles) ? true : onlyActivedRoles;
     //TODO
@@ -27,4 +43,4 @@ var userService = {
 };
 
 // Export constructors.
-module.exports = userService;
+module.exports = UserService;

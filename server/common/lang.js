@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 module.exports = {
   /**
    * create enum datatype.
@@ -11,6 +13,21 @@ module.exports = {
       Enum[Enum[item] = index] = item;
     });
     return Enum;
+  },
+  /**
+   *  format string e.g  stringFormat("my name is {0}, sex is: {1}","tian","male")
+   * @param  {array like} str the source string that will be replace by regex .
+   */
+  function stringFormat() {
+    // use this string as the format,Note {x},x start from 1,2,3
+    // walk through each argument passed in
+    for (var fmt = arguments[0], ndx = 1; ndx < arguments.length; ++ndx) {
+      // replace {1} with argument[1], {2} with argument[2], etc.
+      var argVal = _.isObject(arguments[ndx]) ? JSON.stringify(arguments[ndx]) : arguments[ndx];
+      fmt = fmt.replace(new RegExp('\\{' + (ndx - 1) + '\\}', "g"), argVal);
+    }
+    // return the formatted string
+    return fmt;
   },
   /**
    * 用法：

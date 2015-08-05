@@ -36,9 +36,15 @@ var db = {
   }
 };
 
+var url = {
+  appBaseUrl: 'http://localhost:3000{0}',
+  imageBaseUrl: 'http://localhost:3000/i{0}'
+};
+
 // exports site configuration.
 module.exports = _.extend({}, config, {
   db: db,
   node: node,
-  security: security
+  security: security,
+  url: url
 });

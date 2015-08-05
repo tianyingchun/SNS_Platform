@@ -4,7 +4,7 @@ var security = config.security;
 var cryptor = require('../common/cryptor');
 
 
-var securityService = {
+var SecurityService = {
   /**
    * Generate encypted password with security code and password salt.
    * @param  {String} password The password
@@ -34,4 +34,4 @@ var securityService = {
 };
 
 
-module.exports = securityService;
+module.exports = SecurityService;
