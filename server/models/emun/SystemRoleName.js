@@ -1,6 +1,6 @@
 var lang = require('../../helpers/lang');
 
-var SystemRoleNames = lang.createEnum(
+var SystemRoleName = lang.createEnum(
   [
     'Administrators',
     'Registered',
@@ -8,4 +8,4 @@ var SystemRoleNames = lang.createEnum(
   ]
 );
 
-module.exports = SystemRoleNames;
+module.exports = SystemRoleName;
