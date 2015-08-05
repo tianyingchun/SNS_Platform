@@ -23,7 +23,7 @@ function UserService(userIntance) {
     return this.isInCustomerRole(systemCustomerRoleNames.Registered, onlyActiveCustomerRoles);
   };
 
-  this.IsGuest = function (onlyActiveCustomerRoles) {
+  this.isGuest = function (onlyActiveCustomerRoles) {
     return this.isInCustomerRole(systemCustomerRoleNames.Guests, onlyActiveCustomerRoles);
   };
 

@@ -13,7 +13,9 @@ var node = {
 
 // security configuration.
 var security = {
-  saltCode: 'SPM'
+  saltCode: 'SPM',
+  // The token expired time second
+  tokenLife: 24 * 60 * 60 * 7
 };
 // mysql database.
 var db = {

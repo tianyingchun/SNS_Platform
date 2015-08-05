@@ -20,7 +20,16 @@ var securityService = {
    * @return {String} the salt
    */
   getRandomSalt: function () {
-    return cryptor.getRandom(1, 100);
+    return cryptor.randomBytes();
+  },
+  /**
+   * Give method to verify current status of access_token from client
+   * @param  {String}   access_token the access_token
+   * @param  {Function} callback     the callback
+   */
+  checkAccessTokenStatus: function (access_token, callback) {
+
+    // callback(err, token);
   }
 };
 

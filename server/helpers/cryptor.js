@@ -14,6 +14,8 @@ var _decryptDES = function (cryptkey, iv, secretdata) {
   return decoded;
 };
 
+var TOKEN_LENGTH = 32;
+
 module.exports = {
   encryptDES: function (data, secret) {
     var cryptkey = crypto.createHash('sha256').update(secret).digest();
@@ -28,6 +30,9 @@ module.exports = {
     var md5 = crypto.createHash('md5');
     md5.update(str);
     return md5.digest('hex');
+  },
+  randomBytes: function () {
+    return crypto.randomBytes(TOKEN_LENGTH).toString('hex');
   },
   random: function (min, max) {
     if (arguments.length == 1) {
