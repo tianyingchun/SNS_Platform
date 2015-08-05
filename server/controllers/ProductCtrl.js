@@ -4,8 +4,8 @@ var router = express.Router();
 var productService = require('../services/ProductService.js');
 
 var ProductCtrl = {
-  index: function () {
-
+  index: function (req, res) {
+    res.send('11');
   },
 
   show: function () {

@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var logger = require('../helpers/log');
+var logger = require('../common/log');
 
 var userService = {
   /**

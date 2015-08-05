@@ -2,8 +2,8 @@ var ProductModel = require('../models/Product.js');
 
 var ProductService = {
 
-  findAllProducts: function () {
-
+  findAllProducts: function (req, res) {
+    res.send('test');
   },
 
   findProductById: function (id) {

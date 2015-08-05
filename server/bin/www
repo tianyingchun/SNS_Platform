@@ -2,7 +2,7 @@
 var nodeConfig = require('../config').node;
 var app = require('../app');
 
-var logger = require('../helpers/log');
+var logger = require('../common/log');
 app.set('port', nodeConfig.port || process.env.PORT || 8000);
 
 var server = app.listen(app.get('port'), function() {
