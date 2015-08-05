@@ -1,21 +1,5 @@
-var _ = require('lodash');
-var logger = require('../helpers/log');
-var sequelize = require('../models/sequelize');
-var systemRoleNames = require('./emun/systemRoleNames');
+var userExtentions = {
 
-
-function UserService() {
-
-}
-_.extend(UserService, {
-  /**
-   * Find user model instance
-   * @param  {Number} userId userId
-   * @return {Promise}
-   */
-  findUser: function (userId) {
-
-  },
   isInCustomerRole: function (roleSystemName, onlyActivedRoles) {
     onlyActivedRoles =
       _.isUndefined(onlyActivedRoles) ? true : onlyActivedRoles;
@@ -30,7 +14,6 @@ _.extend(UserService, {
   isGuest: function (onlyActivedRoles) {
     return this.isInCustomerRole(systemRoleNames.Guests, onlyActivedRoles);
   }
+};
 
-});
-
-module.exports = UserService;
+module.exports = userExtentions;

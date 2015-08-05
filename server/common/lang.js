@@ -7,5 +7,9 @@ module.exports = {
       Enum[Enum[item] = index] = item;
     });
     return Enum;
+  },
+  // Mixin utility
+  mixin: function (source, target) {
+    return _.extend(source || {}, target);
   }
 }

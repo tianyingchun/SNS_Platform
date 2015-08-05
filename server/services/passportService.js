@@ -2,7 +2,7 @@ var config = require('../config');
 var passport = require('passport');
 var BearerStrategy = require('passport-http-bearer').Strategy;
 var securityService = require('./securityService');
-
+var userService = require('./UserService');
 var strategy = new BearerStrategy(function (access_token, done) {
   //
   securityService.checkAccessTokenStatus(access_token, function (err, token) {

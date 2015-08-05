@@ -1,7 +1,3 @@
-/**
- * Provider base util function for all child controller.
- * @type {[type]}
- */
 var _ = require("lodash");
 var path = require('path');
 
@@ -37,16 +33,11 @@ var getBaseUrl = function (req, queryPath) {
   logger.debug("getBaseUrl(): ", baseUrl);
 
   return baseUrl;
-}
-
+};
 
 module.exports = {
   //
   getBaseUrl: getBaseUrl,
-  // Mixin utility
-  mixin: function (source, target) {
-    return _.extend(source || {}, target);
-  },
 
   isError: function (res, data, options) {
     // first check error.
