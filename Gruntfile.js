@@ -186,7 +186,8 @@ module.exports = function (grunt) {
           env: {
             // for development, isomorphic server render react
             // require the process.env.NODE_ENV =='development' | 'production'
-            NODE_ENV: 'development'
+            NODE_ENV: 'development',
+            DEBUG: 'sns',
           },
           ext: 'js,jsx,html,ejs'
         }
@@ -239,6 +240,6 @@ module.exports = function (grunt) {
   grunt.registerTask('compile', ['eslint', 'vendor', 'browserify:debug', 'stylus']);
   grunt.registerTask('compile:prod', ['vendor', 'envify', 'browserify:prod', 'stylus', 'cssmin', 'uglify']);
   grunt.registerTask('default', ['compile']);
-  grunt.registerTask('server', ['compile', 'concurrent:debug']);
+  grunt.registerTask('server', ['concurrent:debug']);
   grunt.registerTask('server:prod', ['compile:prod', 'concurrent:prod']);
 };

@@ -54,27 +54,10 @@ app.use(function (req, res, next) {
   next(err);
 });
 
-if (app.get('env') === 'development') {
+if (process.env.NODE_ENV === 'development') {
   // only use in development
+  console.log(11111111);
   app.use(errorhandler());
 }
-
-// catch 500 and other error and stop app exec.
-app.use(function (err, req, res, next) {
-  res.status(err.status || 500);
-  var contentType = req.get('Content-Type');
-  switch (contentType) {
-    case "application/json":
-      helper.renderJson(res, err);
-      break;
-    default:
-      helper.renderAction(res, 'error', {
-        message: err.message,
-        // production error handler, development will print stacktrace
-        error: app.get('env') !== 'production' ? err : {}
-      });
-      break;
-  }
-});
 
 module.exports = app;

@@ -1,6 +1,6 @@
 // require all data model schema here.
 var sequelize = require('./sequelize');
-var db = require('./config').db;
+var db = require('../config').db;
 // User     //
 //-----------------------------------------//
 var User = require('./User');

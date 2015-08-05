@@ -2,7 +2,7 @@ var _ = require("lodash");
 
 // site configuration.
 var config = {
-  appName: "SNS-Platform",
+  appName: "sns",
   defaultDataProvider: "mysql" // maybe sqlserver
 };
 
@@ -20,13 +20,13 @@ var security = {
 // mysql database.
 var db = {
   database: 'SNS_Platform_Test',
-  username: 'root',
-  password: '19861121.lr',
+  username: 'sns',
+  password: 'sns',
   // db configuration.
   options: {
     dialect: 'mysql',
     host: 'localhost',
-    port: 3307,
+    port: 3306,
     timezone: '+08:00',
     logging: console.log
   },

@@ -1,7 +1,7 @@
-var logger = require('../helpers/log');
+var logger = require('../common/log');
 var config = require('../config');
 var security = config.security;
-var cryptor = require('../helpers/cryptor');
+var cryptor = require('../common/cryptor');
 
 
 var securityService = {

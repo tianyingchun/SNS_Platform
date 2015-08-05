@@ -1,24 +1,54 @@
 var ProductService = require('../services/ProductService.js');
+var debug = require('debug')(require('../config').appName);
+var logger = require('../common/log');
 
 var ProductCtrl = {
-  index: function (req, res) {
-    res.send('11');
+  index: function (req, res, next) {
+    ProductService.findAllProducts().then(function (products) {
+      res.send(products);
+    }).catch(function (error) {
+      next(error);
+    });
   },
 
-  show: function () {
-
+  show: function (req, res, next) {
+    var id = req.params.id;
+    logger.info('product id: %s', id);
+    ProductService.findProductById(id).then(function (product) {
+      res.send(product);
+    }).catch(function (error) {
+      next(error);
+    });
   },
 
-  create: function () {
+  create: function (req, res, next) {
+    var product = req.body;
+    ProductService.createProduct(product).then(function (product) {
 
+      res.send(product);
+    }).catch(function (error) {
+      next(error);
+    });
   },
 
-  update: function () {
+  update: function (req, res, next) {
+    var product = req.body;
+    product.id = req.params.id;
 
+    ProductService.updateProduct(product).then(function (product) {
+      res.send(product);
+    }).catch(function (error) {
+      next(error);
+    });
   },
 
-  delete: function () {
-
+  delete: function (req, res, next) {
+    var id = req.params.id;
+    ProductService.deleteProduct(id).then(function (product) {
+      res.send(product);
+    }).catch(function (error) {
+      next(error);
+    });
   }
 };
 
