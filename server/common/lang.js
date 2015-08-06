@@ -18,7 +18,7 @@ module.exports = {
    *  format string e.g  stringFormat("my name is {0}, sex is: {1}","tian","male")
    * @param  {array like} str the source string that will be replace by regex .
    */
-  function stringFormat() {
+  stringFormat: function() {
     // use this string as the format,Note {x},x start from 1,2,3
     // walk through each argument passed in
     for (var fmt = arguments[0], ndx = 1; ndx < arguments.length; ++ndx) {
