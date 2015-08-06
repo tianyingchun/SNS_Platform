@@ -1,8 +1,18 @@
 #!/usr/bin/env node
-var init = require('../models/initializer.js');
+// require all data model schema here.
+var sequelize = require('./association');
+var _ = require('lodash');
+var db = require('../config').db;
 
-init.syncDB().then(function (result) {
-  console.log('result:', result);
+var defaultOptions = {
+  force: true,
+  match: /_Test$/
+};
+
+var options = _.extend(defaultOptions, db.syncOptions);
+
+sequelize.sync(options).then(function (result) {
+
 }).catch(function (e) {
   console.log('error:', e);
 });

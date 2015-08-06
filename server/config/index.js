@@ -33,6 +33,9 @@ var db = {
   getTableName: function (tabName) {
     // Social network marketing platform
     return 'spm_' + tabName.toLowerCase();
+  },
+  syncOptions: {
+
   }
 };
 
