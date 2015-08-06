@@ -1,5 +1,5 @@
 var router = require('express').Router();
-
+var auth = require('./middlewares/basicAuth');
 var ProductCtrl = require('./controllers/ProductCtrl');
 var UserCtrl = require('./controllers/UserCtrl');
 
@@ -16,7 +16,7 @@ router.put('/products/:id', ProductCtrl.update);
 router.delete('/products/:id', ProductCtrl.delete);
 
 /** get all users */
-router.get('/users', UserCtrl.index);
+router.get('/users', auth.security(['administrator']), UserCtrl.index);
 /** get a user by id */
 router.get('/users/:id', UserCtrl.show);
 /** create a user*/
@@ -30,4 +30,3 @@ router.delete('/users/:id', UserCtrl.delete);
 
 
 module.exports = router;
-

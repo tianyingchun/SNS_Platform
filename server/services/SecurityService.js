@@ -29,7 +29,11 @@ var SecurityService = {
    */
   checkAccessTokenStatus: function (access_token, callback) {
 
-    // callback(err, token);
+    var token = {
+      userId: 'test',
+      created: 1438876837717
+    };
+    callback(null, token);
   }
 };
 
