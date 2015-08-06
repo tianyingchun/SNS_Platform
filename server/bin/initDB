@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // require all data model schema here.
-var sequelize = require('./association');
+var sequelize = require('../models/association.js');
 var _ = require('lodash');
 var db = require('../config').db;
 
