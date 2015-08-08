@@ -64,7 +64,5 @@ if (process.env.NODE_ENV === 'development') {
 // for production error handling.
 // handle client json exceptions.
 app.use(response.clientErrorHandler);
-// handle client page exceptions.
-app.use(response.errorHandler);
 
 module.exports = app;

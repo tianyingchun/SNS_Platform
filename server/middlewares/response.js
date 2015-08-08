@@ -58,13 +58,13 @@ module.exports = {
     // negotiate
     var accept = accepts(req);
     var type = accept.type('html', 'json', 'text');
-    if (type === 'json') {
-      var error = {
-        code: res.statusCode,
-        message: err.message
-      };
-      _.extend(error, err);
+    var error = {
+      code: res.statusCode,
+      message: err.message
+    };
+    _.extend(error, err);
 
+    if (type === 'json') {
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.status(500).send(error);
       // plain text
@@ -73,30 +73,27 @@ module.exports = {
       res.setHeader('Content-Type', 'text/plain; charset=utf-8')
       res.status(500).send(errorHtml);
     } else {
-      next(err);
+      errorHtml = _.isObject(err) ? err.message : err;
+      var html =
+        '<html>' +
+        '  <head>' +
+        '    <meta charset="utf-8">' +
+        '  </head>' +
+        '  <body>' +
+        '    <div id="wrapper">' +
+        '      <h1>Error Occurs</h1>' +
+        '      <h2>code:{code}</h2>' +
+        '      <h2><em>message:</em>{message}</h2>' +
+        '      <h2><em>description:</em>{description}</h2>' +
+        '    </div>' +
+        '  </body>' +
+        '</html>';
+      var body = html
+        .replace('{code}', error.code)
+        .replace('{message}', error.message)
+        .replace('{description}', error.description);
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(body);
     }
-  },
-  /**
-   * error handler for client page.
-   */
-  errorHandler: function (err, req, res, next) {
-    errorHtml = _.isObject(err) ? err.message : err;
-    var html =
-      '<html>' +
-      '  <head>' +
-      '    <meta charset="utf-8">' +
-      '  </head>' +
-      '  <body>' +
-      '    <div id="wrapper">' +
-      '      <h1>Error Occurs</h1>' +
-      '      <h2><em>{statusCode}</em> {error}</h2>' +
-      '    </div>' +
-      '  </body>' +
-      '</html>';
-    var body = html
-      .replace('{statusCode}', res.statusCode)
-      .replace(/\{error\}/g, errorHtml);
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.send(body);
   }
 };
