@@ -9,6 +9,7 @@ var cors = require('cors');
 var errorhandler = require('errorhandler');
 var config = require('./config');
 var router = require('./router');
+var response = require('./middlewares/response');
 var debug = require('debug')(config.appName);
 
 //For requiring `.jsx` files as Node modules
@@ -48,7 +49,6 @@ app.use('/api/v1', cors(), router);
 // app.use('/', client);
 //
 
-
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   var err = new Error('404 Not Found!');
@@ -56,9 +56,15 @@ app.use(function (req, res, next) {
   next(err);
 });
 
+// only use in development
 if (process.env.NODE_ENV === 'development') {
-  // only use in development
   app.use(errorhandler());
 }
+
+// for production error handling.
+// handle client json exceptions.
+app.use(response.clientErrorHandler);
+// handle client page exceptions.
+app.use(response.errorHandler);
 
 module.exports = app;

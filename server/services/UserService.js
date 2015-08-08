@@ -54,8 +54,13 @@ var UserService = {
     //   }
     // });
 
+    // var err = new Error('ddddddddd');
+    // err.code = "1000000";
+    // err.description = "the error descritption";
+
+    // deferred.reject(err);
     deferred.resolve(_.extend(user, {
-      roles:['administrator']
+      roles: ['administrator']
     }));
 
     return deferred.promise;
