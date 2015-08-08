@@ -3,6 +3,14 @@ var lang = require('../common/lang');
 var UserCtrl = {
 
   index: function (req, res, next) {
+    // var err = new Error('ddddddddd');
+    // err.code = "1000000";
+    // err.description = "the error descritption";
+
+    // throw err;
+
+    // next(err);
+
     res.status(200).send({
       authInfo: req.authInfo
     });

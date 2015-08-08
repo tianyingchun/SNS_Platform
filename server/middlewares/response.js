@@ -59,19 +59,20 @@ module.exports = {
     var accept = accepts(req);
     var type = accept.type('html', 'json', 'text');
     var error = {
-      code: res.statusCode,
       message: err.message
     };
+    delete err.status;
+
     _.extend(error, err);
 
     if (type === 'json') {
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.status(500).send(error);
+      res.status(res.statusCode).send(error);
       // plain text
     } else if (type === 'text') {
       var errorHtml = _.isObject(err) ? err.message : err;
       res.setHeader('Content-Type', 'text/plain; charset=utf-8')
-      res.status(500).send(errorHtml);
+      res.status(res.statusCode).send(errorHtml);
     } else {
       errorHtml = _.isObject(err) ? err.message : err;
       var html =
