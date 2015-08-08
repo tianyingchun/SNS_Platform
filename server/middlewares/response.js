@@ -1,19 +1,5 @@
 var _ = require('lodash');
 var accepts = require('accepts');
-var escapeHtml = require('escape-html');
-
-var doubleSpaceGlobalRegExp = /  /g
-var newLineGlobalRegExp = /\n/g
-
-/**
- * Escape a block of HTML, preserving whitespace.
- * @api private
- */
-function escapeHtmlBlock(str) {
-  return escapeHtml(str)
-    .replace(doubleSpaceGlobalRegExp, ' &nbsp;')
-    .replace(newLineGlobalRegExp, '<br>');
-}
 
 module.exports = {
   render: function (req, res, next) {
