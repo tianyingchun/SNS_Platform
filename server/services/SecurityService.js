@@ -1,3 +1,4 @@
+var q = require('Q');
 var logger = require('../common/log');
 var config = require('../config');
 var security = config.security;
@@ -27,13 +28,18 @@ var SecurityService = {
    * @param  {String}   access_token the access_token
    * @param  {Function} callback     the callback
    */
-  checkAccessTokenStatus: function (access_token, callback) {
+  parseAccessToken: function (access_token) {
+
+    var deferred = q.defer();
 
     var token = {
       userId: 'test',
       created: 1438876837717
     };
-    callback(null, token);
+
+    deferred.resolve(token);
+    // deferred.reject('token can\'t be parsed ');
+    return deferred.promise;
   }
 };
 

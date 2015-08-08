@@ -1,6 +1,61 @@
 var _ = require('lodash');
-
+var util = require('util');
 module.exports = {
+  /**
+   * @example()
+   * var error = require('error')
+   * var NotFoundError = error('NotFoundError', {status:404})
+   * var err = new NotFoundError('ohnoes')
+   * err
+   * //-> NotFoundError {}
+   * err instanceof NotFoundError
+   * //-> true
+   * err instanceof Error
+   * //-> true
+   * err.name === 'NotFoundError'
+   * //-> true
+   * err.message
+   * //-> 'ohnoes'
+   * err.status
+   * //-> 404
+   * Create customized Error constructor
+   * @param  {String} name   the error class name()
+   * @param  {Function} parent optional default is Error class.
+   * @param  {Object} opts    the extend data will merged to
+   * @return {Function}        The new ErrorClass.
+   */
+  createError: function (name, parent, opts) {
+    if (_.isUndefined(opts) && !_.isFunction(parent)) {
+      opts = parent;
+      parent = undefined;
+    }
+
+    parent = parent || Error;
+    opts = opts || {};
+
+    function fn(message) {
+
+      parent.apply(this, arguments);
+
+      if (false !== opts.stack) {
+        Error.captureStackTrace(this, this.constructor);
+      }
+      // merge extend properties.
+      _.extend(this, opts);
+
+      this.message = message;
+    }
+
+    var body = 'return function ' + name + '(){fn.apply(this, arguments)}';
+    var err = new Function('fn', body)(fn);
+
+    // inherites parentError || Error
+    util.inherits(err, parent);
+
+    err.prototype.name = name;
+
+    return err;
+  },
   /**
    * create enum datatype.
    * @param  {Array} values ['Administrator', 'Guests', 'Partner']
@@ -18,7 +73,7 @@ module.exports = {
    *  format string e.g  stringFormat("my name is {0}, sex is: {1}","tian","male")
    * @param  {array like} str the source string that will be replace by regex .
    */
-  stringFormat: function() {
+  stringFormat: function () {
     // use this string as the format,Note {x},x start from 1,2,3
     // walk through each argument passed in
     for (var fmt = arguments[0], ndx = 1; ndx < arguments.length; ++ndx) {
@@ -92,5 +147,4 @@ module.exports = {
       }
     });
   }
-
 };

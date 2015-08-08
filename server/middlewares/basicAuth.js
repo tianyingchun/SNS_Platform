@@ -2,76 +2,101 @@ var _ = require('lodash');
 var passport = require('passport');
 var BearerStrategy = require('passport-http-bearer');
 var config = require('../config');
+var lang = require('../common/lang');
 var securityService = require('../services/SecurityService');
 var userService = require('../services/UserService');
 
+var AuthError = lang.createError('AuthError');
+
+var AUTH_ERROR_MESSAGE = {
+  'TOKEN_EMPTY': 'parsed token is empty!',
+  'TOKEN_EXPIRED': 'token has been expired',
+  'USER_UNKNOWN': 'unknown user',
+  'NOT_MATCHED_ROLES': 'use not belong to required roles'
+};
 module.exports = {
 
+  /**
+   * @exmaples:
+   * 1. attach access_token='token_value' to url parameter.
+   * 2. attach 'access_token: token_value' in the body payload for post request.
+   * 3. using headers: {Authorization:'Bearer token_value'}
+   * @param  {Array} roles the user must be in specificed roles.
+   */
   security: function (roles) {
 
     if (roles && _.isString(roles)) {
       roles = [roles];
     }
-
-    // using auth token strategy.
-    var strategy = new BearerStrategy({
-      passReqToCallback: true
-    }, function (req, access_token, done) {
+    // The token verification handler.
+    var tokenVerify = function (req, access_token, done) {
       // validation user token..
-      securityService.checkAccessTokenStatus(access_token, function (err, token) {
-        // has error
-        if (err) {
-          return done(err);
-        }
-        // invalid_token
-        if (!token) return done(null, false);
-
-        // token_expired
-        if (Math.round((Date.now() - token.created) / 1000) > config.security.tokenLife) {
-          // if we need remove this access_token if we use radis cache.
-          return done(null, false, 'token has been expired');
-        }
-        // find user data.
-        userService.findUser(token.userId).then(function (user) {
+      securityService
+        .parseAccessToken(access_token)
+        .then(function (token) {
+          if (!token) {
+            throw new AuthError('TOKEN_EMPTY');
+          }
+          // token_expired
+          if (Math.round((Date.now() - token.created) / 1000) > config.security.tokenLife) {
+            // if we need remove this access_token if we use radis cache.
+            throw new AuthError('TOKEN_EXPIRED');
+          }
+          // return user if found.
+          return userService.findUser(token.userId);
+        })
+        .then(function (user) {
           if (!user) {
-            return done(null, false, {
-              message: 'Unknown user'
+            throw new AuthError('USER_UNKNOWN');
+          } else {
+            // check if user role is in required role groups
+            return userService.isCustomerInRoles(user, roles);
+          }
+        })
+        .then(function (userRole) {
+          if (userRole) {
+            return done(null, userRole, {
+              scope: 'all'
             });
           } else {
-
-            userService.isCustomerInRoles(user, roles).then(function (user) {
-              console.log('sss', user)
-
-
-              return done(null, user, {
-                scope: 'all'
-              });
-
-
-            }, function (err) {
-              if (err) {
-                return done(err);
-              }
-            });
+            throw new AuthError('NOT_MATCHED_ROLES');
           }
-
-        }, function (err) {
-          if (err) {
-            return done(err);
+        })
+        .catch(function (err) {
+          // console.log('err', err)
+          if (_.isString(err)) {
+            err = new Error(err);
           }
-        });
-
-      });
-
-    });
-
+          var params = [err];
+          // capture AuthError
+          if (err instanceof AuthError) {
+            var errKey = err.message;
+            var message = AUTH_ERROR_MESSAGE[errKey] || '';
+            switch (errKey) {
+              case 'TOKEN_EMPTY':
+              case "TOKEN_EXPIRED":
+              case "USER_UNKNOWN":
+              case "NOT_MATCHED_ROLES":
+                params = [null, false, message];
+                break;
+            }
+          }
+          return done.apply(null, params);
+        })
+        .done();
+    };
+    // using auth token strategy.
     // add token strategy to passort fremework.
-    passport.use(strategy);
-
+    passport.use(
+      new BearerStrategy({
+        passReqToCallback: true
+      }, tokenVerify)
+    );
     return passport.authenticate('bearer', {
       session: false,
+      // Set properity 'autoInfo' to request,
+      // we can use req.authInfo to access authenticated user.
       assignProperty: 'authInfo'
     });
-
   }
 };

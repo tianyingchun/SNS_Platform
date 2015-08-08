@@ -29,7 +29,9 @@ app.set('view engine', 'ejs');
 app.use(favicon(path.join(__dirname, '../public/favicon.ico')));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(compress());
 // express.static.mime.define({
@@ -56,7 +58,6 @@ app.use(function (req, res, next) {
 
 if (process.env.NODE_ENV === 'development') {
   // only use in development
-  console.log(11111111);
   app.use(errorhandler());
 }
 

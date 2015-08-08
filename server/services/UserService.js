@@ -31,6 +31,7 @@ var UserService = {
       name: 'tianyingchun',
       password: 'password'
     });
+    // deferred.resolve();
     return deferred.promise;
   },
   /**
@@ -53,7 +54,9 @@ var UserService = {
     //   }
     // });
 
-    deferred.resolve(user);
+    deferred.resolve(_.extend(user, {
+      roles:['administrator']
+    }));
 
     return deferred.promise;
   },

@@ -1,16 +1,18 @@
 var UserService = require('../services/UserService.js');
-
+var lang = require('../common/lang');
 var UserCtrl = {
 
-  index: function () {
-
+  index: function (req, res, next) {
+    res.status(200).send({
+      authInfo: req.authInfo
+    });
   },
 
   show: function () {
 
   },
 
-  create: function () {
+  create: function (req, res, next) {
 
   },
 
