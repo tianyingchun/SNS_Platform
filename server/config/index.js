@@ -14,6 +14,8 @@ var node = {
 // security configuration.
 var security = {
   saltCode: 'SPM',
+  // The secret for DES decrypt
+  desSecret:'SNS_PLATFORM',
   // The token expired time second
   tokenLife: 24 * 60 * 60 * 7
 };
@@ -26,7 +28,7 @@ var db = {
   options: {
     dialect: 'mysql',
     host: 'localhost',
-    port: 3306,
+    port: 3307,
     timezone: '+08:00',
     logging: console.log
   },

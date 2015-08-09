@@ -9,10 +9,12 @@ var modelName = 'User';
 
 var attributes = {
   username: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    unique: true
   },
   email: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    unique: true
   },
   password: {
     type: Sequelize.STRING,
@@ -30,10 +32,12 @@ var attributes = {
     allowNull: true
   },
   active: {
-    type: Sequelize.BOOLEAN
+    type: Sequelize.BOOLEAN,
+    defaultValue: true
   },
   deleted: {
-    type: Sequelize.BOOLEAN
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
   },
   isSystemAccount: {
     type: Sequelize.BOOLEAN,
@@ -42,7 +46,8 @@ var attributes = {
   },
   lastIpAddress: {
     type: Sequelize.STRING,
-    field: 'last_ip_address'
+    field: 'last_ip_address',
+    allowNull: true
   }
 };
 // merge base to each model.

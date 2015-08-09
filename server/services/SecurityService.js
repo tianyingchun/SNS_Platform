@@ -13,7 +13,7 @@ var SecurityService = {
    * @return {String}          The encrpted password string.
    */
   getEncryptedPassword: function (password, salt) {
-    var mixPwdurn = password.trim() + salt + security.saltCode;
+    var mixPwd = password.trim() + salt + security.saltCode;
     return cryptor.md5(mixPwd);
   },
   /**
@@ -24,6 +24,19 @@ var SecurityService = {
     return cryptor.randomBytes();
   },
   /**
+   * Give method to encrypt user basic information to token
+   * @param  {Object} user User model instance
+   * @return {String}      access_token
+   */
+  genAccessToken: function (user) {
+    var token = {
+      userId: user.Id,
+      crated: Date.now()
+    };
+    var access_token = cryptor.encryptDES(token, security.desSecret);
+    return access_token;
+  },
+  /**
    * Give method to verify current status of access_token from client
    * @param  {String}   access_token the access_token
    * @param  {Function} callback     the callback
@@ -31,14 +44,12 @@ var SecurityService = {
   parseAccessToken: function (access_token) {
 
     var deferred = q.defer();
-
-    var token = {
-      userId: 'test',
-      created: 1438876837717
-    };
-
-    deferred.resolve(token);
-    // deferred.reject('token can\'t be parsed ');
+    try {
+      var token = cryptor.decryptDES(access_token, security.desSecret);
+      deferred.resolve(token);
+    } catch (e) {
+      deferred.reject(e);
+    }
     return deferred.promise;
   }
 };

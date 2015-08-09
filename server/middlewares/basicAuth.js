@@ -43,7 +43,7 @@ module.exports = {
             throw new AuthError('TOKEN_EXPIRED');
           }
           // return user if found.
-          return userService.findUser(token.userId);
+          return userService.findUserById(token.userId);
         })
         .then(function (user) {
           if (!user) {

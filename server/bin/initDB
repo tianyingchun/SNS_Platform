@@ -3,7 +3,7 @@
 var sequelize = require('../models/association.js');
 var _ = require('lodash');
 var db = require('../config').db;
-
+var installService = require('../services/InstallService');
 var defaultOptions = {
   force: true,
   match: /_Test$/
@@ -12,6 +12,10 @@ var defaultOptions = {
 var options = _.extend(defaultOptions, db.syncOptions);
 
 sequelize.sync(options).then(function (result) {
+  //initialize mysql database records.
+  installService.start().then(function  installed () {
+    console.log('initialize databse table data successfully!');
+  });
 
 }).catch(function (e) {
   console.log('error:', e);
