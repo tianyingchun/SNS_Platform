@@ -9,10 +9,10 @@ var userService = require('../services/UserService');
 var AuthError = lang.createError('AuthError');
 
 var AUTH_ERROR_MESSAGE = {
-  'TOKEN_EMPTY': 'parsed token is empty!',
-  'TOKEN_EXPIRED': 'token has been expired',
-  'USER_UNKNOWN': 'unknown user',
-  'NOT_MATCHED_ROLES': 'use not belong to required roles'
+  'TOKEN_EMPTY': 'PARSED TOKEN IS EMPTY!',
+  'TOKEN_EXPIRED': 'TOKEN HAS BEEN EXPIRED',
+  'USER_UNKNOWN': 'UNKNOWN USER',
+  'NOT_MATCHED_ROLES': 'USE NOT BELONG TO REQUIRED ROLES'
 };
 module.exports = {
 
