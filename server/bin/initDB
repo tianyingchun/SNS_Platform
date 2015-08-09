@@ -18,5 +18,5 @@ sequelize.sync(options).then(function (result) {
   });
 
 }).catch(function (e) {
-  console.log('error:', e);
+  console.log('initDB error:', e);
 });

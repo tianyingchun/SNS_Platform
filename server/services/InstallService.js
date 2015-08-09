@@ -39,7 +39,15 @@ var InstallService = {
       isSystemAccount: true,
       lastIpAddress: '127.0.0.1'
     };
-    return UserService.signup(user);
+    return UserService.signup(user).then(function (newUser) {
+      return RoleModel.findOne({
+        where: {
+          name: 'Administrators'
+        }
+      }).then(function (role) {
+        return UserModel.build(newUser).addRole(role);
+      });
+    });
   },
   start: function () {
     return this.initialRoles()
