@@ -85,6 +85,95 @@ module.exports = {
     return fmt;
   },
   /**
+   * Remove any starting case from a `string`, like camel or snake, but keep
+   * spaces and punctuation that may be important otherwise.
+   * @example
+   * toNoCase('camelCase');       // "camel case"
+   * toNoCase('snake_case');      // "snake case"
+   * toNoCase('slug-case');       // "slug case"
+   * toNoCase('Title of Case');   // "title of case"
+   * toNoCase('Sentence case.');  // "sentence case."
+   * @param {String} string
+   * @return {String}
+   */
+  toNoCase: function (str) {
+    /**
+     * Test whether a string is camel-case.
+     */
+
+    var hasSpace = /\s/;
+    var hasSeparator = /[\W_]/;
+    /**
+     * Separator splitter.
+     */
+
+    var separatorSplitter = /[\W_]+(.|$)/g;
+
+
+    /**
+     * Un-separate a `string`.
+     *
+     * @param {String} string
+     * @return {String}
+     */
+
+    function unseparate(string) {
+      return string.replace(separatorSplitter, function (m, next) {
+        return next ? ' ' + next : '';
+      });
+    }
+
+
+    /**
+     * Camelcase splitter.
+     */
+
+    var camelSplitter = /(.)([A-Z]+)/g;
+
+
+    /**
+     * Un-camelcase a `string`.
+     *
+     * @param {String} string
+     * @return {String}
+     */
+
+    function uncamelize(string) {
+      return string.replace(camelSplitter, function (m, previous, uppers) {
+        return previous + ' ' + uppers.toLowerCase().split('').join(' ');
+      });
+    }
+
+    if (hasSpace.test(str)) return string.toLowerCase();
+    if (hasSeparator.test(str)) return (unseparate(str) || str).toLowerCase();
+    return uncamelize(str).toLowerCase();
+  },
+  /**
+   * Convert a `string` to space case.
+   *
+   * @param {String} str
+   * @return {String}
+   */
+  toNoSpace: function (str) {
+    return this.toNoCase(str).replace(/[\W_]+(.|$)/g, function (matches, match) {
+      return match ? ' ' + match : '';
+    });
+  },
+  /**
+   * Convert a `string` to snake case.
+   * @examples
+   * var snake = require('to-snake-case');
+   * snake('camelCase');  // "camel_case"
+   * snake('space case'); // "snake_case"
+   * snake('dot.case');   // "dot_case"
+   * snake('weird[case'); // "weird_case"
+   * @param  {String} str source sentance
+   * @return {String}     snake cased string.
+   */
+  toSnakeCase: function (str) {
+    return this.toNoSpace(str).replace(/\s/g, '_');
+  },
+  /**
    * 用法：
    *   第一个参数传一个Date对象（没有则使用当前时间）
    *   第二个参数是格式化字符串，格式如下：

@@ -1,9 +1,9 @@
-var _ = require("lodash");
-
+var _ = require('lodash');
+var lang = require('../common/lang');
 // site configuration.
 var config = {
-  appName: "sns",
-  defaultDataProvider: "mysql" // maybe sqlserver
+  appName: 'sns',
+  defaultDataProvider: 'mysql' // maybe sqlserver
 };
 
 // node process configuration
@@ -15,7 +15,7 @@ var node = {
 var security = {
   saltCode: 'SPM',
   // The secret for DES decrypt
-  desSecret:'SNS_PLATFORM',
+  desSecret: 'SNS_PLATFORM',
   // The token expired time second
   tokenLife: 24 * 60 * 60 * 7
 };
@@ -34,7 +34,7 @@ var db = {
   },
   getTableName: function (tabName) {
     // Social network marketing platform
-    return 'spm_' + tabName.toLowerCase();
+    return 'spm_' + lang.toSnakeCase(tabName);
   },
   syncOptions: {
 
