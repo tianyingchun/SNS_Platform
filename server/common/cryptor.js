@@ -34,6 +34,30 @@ module.exports = {
   randomBytes: function () {
     return crypto.randomBytes(TOKEN_LENGTH).toString('hex');
   },
+  /**
+   * randomString() =>"XwPp9xazJ0ku5CZnlmgAx2Dld8SHkAeT"
+   * randomString(7)=>"xqm5wXX"
+   * random string with fixed length
+   * @param  {Number} length length
+   * @return {String}
+   */
+  randomString: function (length) {
+    var charsNumbers = '0123456789';
+    var charsLower = 'abcdefghijklmnopqrstuvwxyz';
+    var charsUpper = charsLower.toUpperCase();
+    var chars = charsNumbers + charsLower + charsUpper;
+    length = length || 32;
+    var string = '';
+
+    while (string.length < length) {
+      var bf = crypto.randomBytes(length);
+      for (var i = 0; i < bf.length; i++) {
+        var index = bf.readUInt8(i) % chars.length;
+        string += chars.charAt(index);
+      }
+    }
+    return string;
+  },
   random: function (min, max) {
     if (arguments.length == 1) {
       max = min;

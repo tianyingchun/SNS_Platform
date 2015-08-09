@@ -16,11 +16,14 @@ var SecurityService = {
     var mixPwd = password.trim() + salt + security.saltCode;
     return cryptor.md5(mixPwd);
   },
+  getRandomSalt: function () {
+    return cryptor.randomString(8);
+  },
   /**
    * Genrate random salt for password encryptor.
    * @return {String} the salt
    */
-  getRandomSalt: function () {
+  getRandomBytes: function () {
     return cryptor.randomBytes();
   },
   /**
