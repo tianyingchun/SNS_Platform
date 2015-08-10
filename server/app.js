@@ -11,6 +11,8 @@ var config = require('./config');
 var router = require('./router');
 var response = require('./middlewares/response');
 var debug = require('debug')(config.appName);
+//attach debug to global
+global.debug = debug;
 
 //For requiring `.jsx` files as Node modules
 require('node-jsx').install({

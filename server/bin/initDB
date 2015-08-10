@@ -2,7 +2,10 @@
 // require all data model schema here.
 var sequelize = require('../models/association.js');
 var _ = require('lodash');
-var db = require('../config').db;
+var config = require('../config');
+var db = config.db;
+var debug = require('debug')(config.appName);
+global.debug = debug;
 var installService = require('../services/InstallService');
 var defaultOptions = {
   force: true,
@@ -13,7 +16,7 @@ var options = _.extend(defaultOptions, db.syncOptions);
 
 sequelize.sync(options).then(function (result) {
   //initialize mysql database records.
-  installService.start().then(function  installed () {
+  installService.start().then(function () {
     console.log('initialize databse table data successfully!');
   });
 

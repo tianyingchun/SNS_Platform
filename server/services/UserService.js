@@ -16,7 +16,6 @@ var UserService = {
     if (_.isString(roles)) {
       roles = [roles];
     }
-    // console.log('user:', user)
     // Lowry: return this promise to controller.
     return this.findUserBy({
         $or: [{
@@ -26,7 +25,7 @@ var UserService = {
         }]
       }, false)
       .then(function (found) {
-        console.log('find user: ', found);
+        debug('the signup user has been created');
         if (!found) {
           return UserModel.create(user);
         } else {
@@ -34,7 +33,7 @@ var UserService = {
         }
       })
       .then(function (newUser) {
-        console.log('user created: ', newUser);
+        debug('user create successful');
         return RoleModel.findAll({
           where: {
             name: {
@@ -42,11 +41,11 @@ var UserService = {
             }
           }
         }).then(function (roles) {
-          console.log('roles instance: ', roles);
           if (roles && roles.length) {
-            newUser.addRoles(roles);
-            // Lowry: return this promise here.
-            return newUser.save();
+            debug('add regular role to user!');
+            return newUser.addRoles(roles).then(function () {
+              return newUser;
+            });
           } else {
             throw new Error('can not find the records using given roles');
           }
