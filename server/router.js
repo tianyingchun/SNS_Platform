@@ -26,7 +26,8 @@ router.put('/users/:id', UserCtrl.update);
 /** delete a user by id */
 router.delete('/users/:id', UserCtrl.delete);
 
-
+/** user sigin */
+router.post('/user/signin', UserCtrl.signin);
 
 
 module.exports = router;

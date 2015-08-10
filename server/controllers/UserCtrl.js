@@ -1,4 +1,6 @@
-var UserService = require('../services/UserService.js');
+var Error = require('../config/Error');
+var UserService = require('../services/UserService');
+var SecurityService = require('../services/SecurityService');
 var lang = require('../common/lang');
 var UserCtrl = {
 
@@ -11,7 +13,7 @@ var UserCtrl = {
 
     // next(err);
 
-    res.status(200).send({
+    res.send({
       authInfo: req.authInfo
     });
   },
@@ -34,6 +36,33 @@ var UserCtrl = {
     }).catch(function (err) {
       next(err);
     });
+  },
+
+  // User sigin controller
+  signin: function (req, res, next) {
+    var
+      body = req.body,
+      username = body.username,
+      password = body.password;
+
+    UserService.signin(username, password)
+      .then(function (user) {
+        if (!user) {
+          next(new Error('USER_SIGNIN_FAILED'));
+        } else {
+          var userId = user.get('id');
+          // send access_token to client.
+          var access_token = SecurityService.genAccessToken({
+            userId: user.get('id')
+          });
+          res.send({
+            access_token: access_token
+          });
+        }
+      })
+      .catch(function (err) {
+        next(err);
+      });
   },
 
   update: function () {

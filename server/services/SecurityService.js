@@ -1,5 +1,5 @@
 var q = require('Q');
-var logger = require('../common/log');
+var Error = require('../config/Error');
 var config = require('../config');
 var security = config.security;
 var cryptor = require('../common/cryptor');
@@ -36,8 +36,12 @@ var SecurityService = {
       userId: user.Id,
       crated: Date.now()
     };
-    var access_token = cryptor.encryptDES(token, security.desSecret);
-    return access_token;
+    try {
+      var access_token = cryptor.encryptDES(token, security.desSecret);
+      return 'Bearer ' + access_token;
+    } catch (e) {
+      throw new Error('GEN_ACCESS_TOKEN_FAILED');
+    }
   },
   /**
    * Give method to verify current status of access_token from client

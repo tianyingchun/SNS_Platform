@@ -2,7 +2,7 @@ var _ = require('lodash');
 var lang = require('../common/lang');
 // site configuration.
 var config = {
-  appName: 'sns',
+  appName: 'SPM',
   defaultDataProvider: 'mysql' // maybe sqlserver
 };
 

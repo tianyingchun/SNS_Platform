@@ -9,11 +9,19 @@ module.exports.Message = function (locale) {
   return {
     'USER_HAS_EXISTED': {
       code: 'USER_HAS_EXISTED',
-      message: 'user has been existed'
+      message: 'User or email is already taken'
     },
     'ROLE_CAN_NOT_BE_FOUND': {
       code: 'ROLE_CAN_NOT_BE_FOUND',
-      message: 'can not find the records using given roles'
+      message: 'Can not find the records using given roles.'
+    },
+    'USER_SIGNIN_FAILED': {
+      code: 'USER_SIGNIN_FAILED',
+      message: 'Incorrect username or password.'
+    },
+    'GEN_ACCESS_TOKEN_FAILED': {
+      code: 'GEN_ACCESS_TOKEN_FAILED',
+      message: 'access_token generated failed!'
     }
   };
 };

@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var Error = require('../config/Error');
+var SecurityService = require('../services/SecurityService');
 var systemRoleName = require('../models/enum/SystemRoleName');
 var UserModel = require('../models/User');
 var RoleModel = require('../models/Role');
@@ -55,7 +56,30 @@ var UserService = {
 
   // Login with username, password
   signin: function (username, password) {
-
+    return UserModel.findOne({
+        where: {
+          $or: [{
+            username: username
+          }, {
+            email: username
+          }]
+        }
+      })
+      .then(function (user) {
+        debug('find user by name and password: ', user);
+        var salt = user.get('passwordSalt');
+        var _password = SecurityService.getEncryptedPassword(password, salt);
+        return UserModel.findOne({
+          where: {
+            $or: [{
+              username: user.username
+            }, {
+              email: user.username
+            }],
+            password: _password
+          }
+        });
+      });
   },
 
   // Log out current session.
