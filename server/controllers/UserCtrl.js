@@ -21,7 +21,19 @@ var UserCtrl = {
   },
 
   create: function (req, res, next) {
+    var body = req.body;
 
+    var userInfo = {
+      username: body.username,
+      email: body.email,
+      password: body.password
+    };
+
+    UserService.signup(userInfo).then(function (newUser) {
+      res.send(newUser);
+    }).catch(function (err) {
+      next(err);
+    });
   },
 
   update: function () {

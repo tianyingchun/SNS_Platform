@@ -8,26 +8,47 @@ var UserService = {
   /**
    * register an new user
    * @param  {Object} user User info
+   * @param  {Array} user roles, default is 'Registered'
    * @return {promise}
    */
-  signup: function (user) {
-    var deferred = q.defer();
-    UserModel.findOrCreate({
-      where: {
-        username: user.username,
-        email: user.email
-      },
-      defaults: user
-
-    }).spread(function (user, created) {
-      // return new user.
-      deferred.resolve(user.get({
-        plain: true
-      }));
-    }).catch(function (err) {
-      deferred.reject(err);
-    });
-    return deferred.promise;
+  signup: function (user, roles) {
+    if (!roles) roles = ['Registered'];
+    if (_.isString(roles)) {
+      roles = [roles];
+    }
+    // console.log('user:', user)
+    this.findUserBy({
+        $or: [{
+          username: user.username
+        }, {
+          email: user.email
+        }]
+      }, false)
+      .then(function (found) {
+        console.log('find user: ', found);
+        if (!found) {
+          return UserModel.create(user);
+        } else {
+          throw new Error('user has been existed!');
+        }
+      })
+      .then(function (newUser) {
+        console.log('user created: ', newUser);
+        return RoleModel.findAll({
+          where: {
+            name: {
+              $in: roles
+            }
+          }
+        }).then(function (roles) {
+          console.log('roles instance: ', roles);
+          if (roles && roles.length) {
+            return newUser.addRoles(roles);
+          } else {
+            throw new Error('can not find the records using given roles');
+          }
+        });
+      });
   },
 
   // Login with username, password
@@ -41,21 +62,27 @@ var UserService = {
   },
   /**
    * Find user by some conditions
-   * @param  {Object} conditions the conditions
+   * @param  {Object}  required: conditions the conditions
+   * @param  {Boolean} includeRole: default true.
    * @param  {Boolean} showAll: default is false.
    * @return {promise}
    */
-  findUserBy: function (conditions, showAll) {
-    return UserModel.findOne({
-      where: conditions,
-      include: [{
-        model: RoleModel,
-        as: 'roles'
-      }],
-      where: showAll ? null : {
+  findUserBy: function (conditions, includeRole, showAll) {
+
+    includeRole = _.isUndefined(includeRole) ? true : !!includeRole;
+    showAll = _.isUndefined(showAll) ? false : !!showAll;
+    if (showAll === false) {
+      _.extend(conditions, {
         active: true,
         deleted: false
-      },
+      });
+    }
+    return UserModel.findOne({
+      where: conditions,
+      include: includeRole ? [{
+        model: RoleModel,
+        as: 'roles'
+      }] : null
     });
   },
   // Find user model instance

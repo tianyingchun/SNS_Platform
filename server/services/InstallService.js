@@ -39,13 +39,18 @@ var InstallService = {
       isSystemAccount: true,
       lastIpAddress: '127.0.0.1'
     };
-    return UserService.signup(user).then(function (newUser) {
+    return UserService.signup(user).then(function (newUser, created) {
+      console.log('newUser:', newUser, 'created: ',created);
+      // console.log('newUser111:', newUser.get({
+      //   plain: true
+      // }));
+
       return RoleModel.findOne({
         where: {
           name: 'Administrators'
         }
       }).then(function (role) {
-        return UserModel.build(newUser).addRole(role);
+        return newUser.addRole(role);
       });
     });
   },
