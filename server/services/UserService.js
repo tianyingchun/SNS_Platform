@@ -17,7 +17,8 @@ var UserService = {
       roles = [roles];
     }
     // console.log('user:', user)
-    this.findUserBy({
+    // Lowry: return this promise to controller.
+    return this.findUserBy({
         $or: [{
           username: user.username
         }, {
@@ -43,7 +44,9 @@ var UserService = {
         }).then(function (roles) {
           console.log('roles instance: ', roles);
           if (roles && roles.length) {
-            return newUser.addRoles(roles);
+            newUser.addRoles(roles);
+            // Lowry: return this promise here.
+            return newUser.save();
           } else {
             throw new Error('can not find the records using given roles');
           }

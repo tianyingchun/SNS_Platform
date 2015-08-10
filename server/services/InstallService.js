@@ -50,7 +50,10 @@ var InstallService = {
           name: 'Administrators'
         }
       }).then(function (role) {
-        return newUser.addRole(role);
+        newUser.addRole(role);
+        return newUser.save();
+      }).catch(function (e) {
+        console.log(e);
       });
     });
   },
