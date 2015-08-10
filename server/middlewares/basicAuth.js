@@ -70,7 +70,7 @@ module.exports = {
           var params = [err];
           // capture AuthError
           if (err instanceof AuthError) {
-            var errKey = err.message;
+            var errKey = err.code;
             var message = AUTH_ERROR_MESSAGE[errKey] || '';
             switch (errKey) {
               case 'TOKEN_EMPTY':

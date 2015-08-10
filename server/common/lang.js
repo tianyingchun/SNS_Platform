@@ -3,8 +3,7 @@ var util = require('util');
 module.exports = {
   /**
    * @example()
-   * var error = require('error')
-   * var NotFoundError = error('NotFoundError', {status:404})
+   * var NotFoundError = createError('NotFoundError', {status:404})
    * var err = new NotFoundError('ohnoes')
    * err
    * //-> NotFoundError {}
@@ -33,7 +32,12 @@ module.exports = {
     parent = parent || Error;
     opts = opts || {};
 
-    function fn(message) {
+    /**
+     * The error constructor
+     * @param  {String}   code    the code
+     * @param  {String}   message the message
+     */
+    function fn(code, message) {
 
       parent.apply(this, arguments);
 
@@ -43,6 +47,7 @@ module.exports = {
       // merge extend properties.
       _.extend(this, opts);
 
+      this.code = code;
       this.message = message;
     }
 

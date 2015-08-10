@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var accepts = require('accepts');
-
+var BizError = require('../config/Error');
 module.exports = {
   render: function (req, res, next) {
     // grab reference of render
@@ -27,6 +27,11 @@ module.exports = {
    *     err.description = 'error descriptions.'
    */
   clientErrorHandler: function (err, req, res, next) {
+
+    locale = 'en_us';
+
+    var ErrorMessage = BizError.Message(locale);
+
     // respect err.statusCode
     if (err.statusCode) {
       res.statusCode = err.statusCode;
@@ -44,12 +49,13 @@ module.exports = {
     // negotiate
     var accept = accepts(req);
     var type = accept.type('html', 'json', 'text');
+
     var error = {
       message: err.message
     };
     delete err.status;
 
-    _.extend(error, err);
+    _.extend(error, err, ErrorMessage[err.code] || {});
 
     if (type === 'json') {
       res.setHeader('Content-Type', 'application/json; charset=utf-8');

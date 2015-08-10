@@ -1,9 +1,9 @@
 var _ = require('lodash');
-var q = require('Q');
-var logger = require('../common/log');
+var Error = require('../config/Error');
 var systemRoleName = require('../models/enum/SystemRoleName');
 var UserModel = require('../models/User');
 var RoleModel = require('../models/Role');
+
 var UserService = {
   /**
    * register an new user
@@ -29,7 +29,7 @@ var UserService = {
         if (!found) {
           return UserModel.create(user);
         } else {
-          throw new Error('user has been existed!');
+          throw new Error('USER_HAS_EXISTED');
         }
       })
       .then(function (newUser) {
@@ -47,7 +47,7 @@ var UserService = {
               return newUser;
             });
           } else {
-            throw new Error('can not find the records using given roles');
+            throw new Error('ROLE_CAN_NOT_BE_FOUND');
           }
         });
       });
