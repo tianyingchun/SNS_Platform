@@ -24,12 +24,13 @@ var UserCtrl = {
 
   create: function (req, res, next) {
     var body = req.body;
-
     var userInfo = {
       username: body.username,
       email: body.email,
       password: body.password
     };
+
+    debug.module('UserCtrl')('creating new user username: %s, passowrd: %s ', userInfo.username, userInfo.password);
 
     UserService.signup(userInfo).then(function (newUser) {
       res.send(newUser);

@@ -185,9 +185,10 @@ module.exports = function (grunt) {
           nodeArgs: ['--debug'],
           env: {
             // for development, isomorphic server render react
-            // require the process.env.NODE_ENV =='development' | 'production'
             NODE_ENV: 'development',
-            DEBUG: 'sns',
+            // require the process.env.NODE_ENV =='development' | 'production'
+            DEBUG: 'SPM:*',
+            DEBUG_COLORS: true
           },
           ext: 'js,jsx,html,ejs'
         }
@@ -216,7 +217,7 @@ module.exports = function (grunt) {
 
     concurrent: {
       debug: {
-        tasks: ['nodemon:debug', 'watch'/*, 'node-inspector'*/],
+        tasks: ['nodemon:debug', 'watch' /*, 'node-inspector'*/ ],
         options: {
           logConcurrentOutput: true
         }

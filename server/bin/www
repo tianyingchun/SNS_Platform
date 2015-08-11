@@ -2,10 +2,9 @@
 var nodeConfig = require('../config').node;
 var app = require('../app');
 
-var logger = require('../common/log');
 app.set('port', nodeConfig.port || process.env.PORT || 8000);
 
 var server = app.listen(app.get('port'), function() {
-  logger.info('Express server listening on port ' + server.address().port);
+  console.log('===Express server listening on port %d ===', server.address().port);
 });
 
