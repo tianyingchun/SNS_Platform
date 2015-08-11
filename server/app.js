@@ -8,24 +8,6 @@ var morgan = require('morgan');
 var cors = require('cors');
 var errorhandler = require('errorhandler');
 var config = require('./config');
-var _debug = require('debug');
-
-//--Attach debug to global---//
-global.debug = _debug(config.appName);
-// Add namespacing support to specific file module
-// debug('UserCtrl')(info1,info2,info3)
-global.debug.module = function (name) {
-  var __debug = _debug(config.appName);
-  if (name) {
-    __debug = _debug(config.appName + ":" + name);
-  }
-  return function (args) {
-    var args = Array.prototype.slice.call(arguments, 0);
-    __debug.apply(__debug, args);
-  }
-};
-//--Attach debug to global---//
-
 var router = require('./router');
 var response = require('./middlewares/response');
 

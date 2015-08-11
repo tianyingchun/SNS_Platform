@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var debug = require('debug')('app:UserService');
 var Error = require('../config/Error');
 var SecurityService = require('../services/SecurityService');
 var systemRoleName = require('../models/enum/SystemRoleName');

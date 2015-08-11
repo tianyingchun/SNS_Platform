@@ -1,4 +1,6 @@
 var q = require('Q');
+var debug = require('debug')('app:SecurityService');
+
 var Error = require('../config/Error');
 var config = require('../config');
 var security = config.security;

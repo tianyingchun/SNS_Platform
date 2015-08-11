@@ -2,6 +2,7 @@ var Error = require('../config/Error');
 var UserService = require('../services/UserService');
 var SecurityService = require('../services/SecurityService');
 var lang = require('../common/lang');
+var debug = require('debug')('app:UserCtrl');
 var UserCtrl = {
 
   index: function (req, res, next) {
@@ -30,7 +31,7 @@ var UserCtrl = {
       password: body.password
     };
 
-    debug.module('UserCtrl')('creating new user username: %s, passowrd: %s ', userInfo.username, userInfo.password);
+    debug('creating new user username: %s, passowrd: %s ', userInfo.username, userInfo.password);
 
     UserService.signup(userInfo).then(function (newUser) {
       res.send(newUser);

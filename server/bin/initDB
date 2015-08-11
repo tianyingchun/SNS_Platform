@@ -10,8 +10,6 @@ var defaultOptions = {
   match: /_Test$/
 };
 
-global.debug = require('debug')(config.appName);
-
 var options = _.extend(defaultOptions, db.syncOptions);
 
 sequelize.sync(options).then(function (result) {

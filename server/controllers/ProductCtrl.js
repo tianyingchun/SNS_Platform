@@ -1,5 +1,5 @@
 var ProductService = require('../services/ProductService.js');
-var debug = require('debug')(require('../config').appName);
+var debug = require('debug')('app:ProductCtrl');
 var logger = require('../common/log');
 
 var ProductCtrl = {

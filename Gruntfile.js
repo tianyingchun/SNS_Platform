@@ -187,7 +187,7 @@ module.exports = function (grunt) {
             // for development, isomorphic server render react
             NODE_ENV: 'development',
             // require the process.env.NODE_ENV =='development' | 'production'
-            DEBUG: 'SPM:*',
+            DEBUG: 'app:*',
             DEBUG_COLORS: true
           },
           ext: 'js,jsx,html,ejs'

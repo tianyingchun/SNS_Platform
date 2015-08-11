@@ -1,3 +1,5 @@
+var debug = require('debug')('app:PictureService');
+
 var ProductModel = require('../models/Product.js');
 
 var ProductService = {
