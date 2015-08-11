@@ -10,6 +10,7 @@ var errorhandler = require('errorhandler');
 var config = require('./config');
 var router = require('./router');
 var response = require('./middlewares/response');
+var association = require('./models/association');
 
 //For requiring `.jsx` files as Node modules
 require('node-jsx').install({

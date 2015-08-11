@@ -1,11 +1,11 @@
 var _ = require('lodash');
+var q = require('q');
 var debug = require('debug')('app:UserService');
 var Error = require('../config/Error');
 var SecurityService = require('../services/SecurityService');
 var systemRoleName = require('../models/enum/SystemRoleName');
 var UserModel = require('../models/User');
 var RoleModel = require('../models/Role');
-
 var UserService = {
   /**
    * register an new user
@@ -67,19 +67,20 @@ var UserService = {
         }
       })
       .then(function (user) {
-        debug('find user by name and password: ', user);
-        var salt = user.get('passwordSalt');
-        var _password = SecurityService.getEncryptedPassword(password, salt);
-        return UserModel.findOne({
-          where: {
-            $or: [{
-              username: user.username
-            }, {
-              email: user.username
-            }],
-            password: _password
+        debug('find user by name/email and password: ', user);
+        if (!user) {
+          throw new Error('USER_SIGNIN_FAILED');
+        } else {
+          var salt = user.get('passwordSalt');
+          var passwordInDb = user.get('password');
+          var _password = SecurityService.getEncryptedPassword(password, salt);
+          if (_password === passwordInDb) {
+            debug('user promise: ', user.then)
+            return user;
+          } else {
+            throw new Error('USER_SIGNIN_FAILED');
           }
-        });
+        }
       });
   },
 
@@ -171,23 +172,25 @@ var UserService = {
     if (_.isString(roles)) {
       roles = [roles];
     }
-    //TODO...
     var deferred = q.defer();
-    // _(roles).forEach(function (item) {
-    //   if (item == "administrator") {
-    //     return false;
-    //   }
-    // });
 
-    // var err = new Error('ddddddddd');
-    // err.code = "1000000";
-    // err.description = "the error descritption";
-
-    // throw err;
-    // deferred.reject(err);
-    deferred.resolve(_.extend(user, {
-      roles: ['administrator']
-    }));
+    this.findUserBy({
+      id: user.get('id')
+    }, false).then(function (user) {
+      var _roles = user.getRoles() || [];
+      debug('the user roles: ', _roles);
+      var matched = false;
+      _[_roles].forEach(function (item) {
+        if (_.include[roles, item.get('name')]) {
+          matched = true;
+        }
+      });
+      if (matched === true) {
+        deferred.resolve(user.get());
+      }
+    }).catch(function (e) {
+      deferred.reject(e);
+    });
 
     return deferred.promise;
   },

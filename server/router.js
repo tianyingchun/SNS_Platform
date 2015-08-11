@@ -16,7 +16,7 @@ router.put('/products/:id', ProductCtrl.update);
 router.delete('/products/:id', ProductCtrl.delete);
 
 /** get all users */
-router.get('/users', auth.security(['administrator']), UserCtrl.index);
+router.get('/users', auth.security(['Registered']), UserCtrl.index);
 /** get a user by id */
 router.get('/users/:id', UserCtrl.show);
 /** create a user*/

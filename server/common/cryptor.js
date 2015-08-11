@@ -1,5 +1,4 @@
 var crypto = require('crypto');
-
 var _encryptDES = function (cryptkey, iv, cleardata) {
   var encipher = crypto.createCipheriv('aes-256-cbc', cryptkey, iv),
     encoded = encipher.update(cleardata, 'utf8', 'base64');

@@ -35,11 +35,11 @@ var SecurityService = {
    */
   genAccessToken: function (user) {
     var token = {
-      userId: user.Id,
-      crated: Date.now()
+      userId: user.userId,
+      created: Date.now()
     };
     try {
-      var access_token = cryptor.encryptDES(token, security.desSecret);
+      var access_token = cryptor.encryptDES(JSON.stringify(token), security.desSecret);
       return 'Bearer ' + access_token;
     } catch (e) {
       throw new Error('GEN_ACCESS_TOKEN_FAILED');
@@ -54,7 +54,7 @@ var SecurityService = {
 
     var deferred = q.defer();
     try {
-      var token = cryptor.decryptDES(access_token, security.desSecret);
+      var token = JSON.parse(cryptor.decryptDES(access_token, security.desSecret));
       deferred.resolve(token);
     } catch (e) {
       deferred.reject(e);
