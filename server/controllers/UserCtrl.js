@@ -60,9 +60,8 @@ var UserCtrl = {
   signin: function (req, res, next) {
     var
       body = req.body,
-      username = body.username,
+      username = body.username || body.email,
       password = body.password;
-
     UserService.signin(username, password)
       .then(function (user) {
         if (!user) {
