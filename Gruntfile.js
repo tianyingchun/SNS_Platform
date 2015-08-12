@@ -188,6 +188,7 @@ module.exports = function (grunt) {
             // can use app.get('env') in express->app.js, default is 'development'
             // require the process.env.NODE_ENV =='development' | 'production'
             NODE_ENV: 'development',
+            // enable logging: DEBUG: app:*, expressjs, node,..
             DEBUG: 'app:*',
             DEBUG_COLORS: true
           },
