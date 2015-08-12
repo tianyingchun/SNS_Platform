@@ -40,6 +40,8 @@ var db = {
 
   }
 };
+// locales config.
+var locales = ['en','zh'];
 
 var url = {
   appBaseUrl: 'http://localhost:3000{0}',
@@ -51,5 +53,6 @@ module.exports = _.extend({}, config, {
   db: db,
   node: node,
   security: security,
-  url: url
+  url: url,
+  locales: locales
 });
