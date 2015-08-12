@@ -8,7 +8,6 @@ var morgan = require('morgan');
 var cors = require('cors');
 var errorhandler = require('errorhandler');
 var locale =  require('locale');
-var csurf = require('csurf');
 var config = require('./config');
 var router = require('./router');
 var response = require('./middlewares/response');
@@ -43,15 +42,13 @@ app.use("/static", express.static(path.join(__dirname, '../public')));
 // set default locale
 // referecen: https://github.com/gpbl/isomorphic500
 locale.Locale.default = config.locales[0];
-
 // Set req.locale based on the broswer settings.
 app.use(locale(config.locales));
-
 // Overwrite req.locale either from cookie or querystring
 app.use(setLocale);
 
 // This is used by the fetchr plugin.
-app.use(csurf({cookie: true}));
+// app.use(csurf({cookie: true}));
 
 // Initialize application routing configuraton.
 app.use('/api/v1', cors(), router);

@@ -43,8 +43,7 @@
     "superagent": "^1.2.0",
     "winston": "~1.0.1",
     "accepts": "^1.2.12",
-    "locale": "0.0.20",
-    "csurf": "^1.8.3"
+    "locale": "0.0.20"
   },
   "devDependencies": {
     "browserify": "*",
