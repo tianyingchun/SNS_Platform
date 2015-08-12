@@ -12,7 +12,12 @@ var UserCtrl = {
   index: function (req, res, next) {
     // TODO. maybe we need to give multi roles and list it's corresponding user
     var authInfo = req.authInfo;
-    UserService.findAllUsers().then(function (users) {
+    var query = req.query;
+    var page = query.page || 1;
+    var size = query.size || 10;
+    debug('get all users: get parsms: ', query);
+
+    UserService.findAllUsers(page, size).then(function (users) {
       res.send(users);
     }).catch(function (err) {
       next(err);

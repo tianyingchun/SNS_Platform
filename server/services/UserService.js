@@ -128,13 +128,13 @@ var UserService = {
   },
   /**
    * Find all users with corresponding role data allow us pagination.
-   * @param  {Number} pageIndex start number 1
-   * @param  {Number} pageSize
+   * @param  {Number} page start number 1
+   * @param  {Number} size
    * @param  {Object} conditions search filter conditions
    * @param  {Boolean} showAll    true show all rows otherwise show actived and deleted==false
    * @return {Promise}
    */
-  findAllUsers: function (pageIndex, pageSize, conditions, showAll) {
+  findAllUsers: function (page, size, conditions, showAll) {
     var _where = {};
     if (_.isObject(conditions)) {
       _where = conditions;
@@ -145,9 +145,9 @@ var UserService = {
         deleted: false
       });
     }
-
+    if (page == 0) page = 1;
     // now simple use limit, offset, maybe need to use store procedure to improve performance
-    var offset = pageIndex * (pageSize - 1);
+    var offset = size * (page - 1);
 
     return UserModel.findAndCountAll({
       include: [{
@@ -156,7 +156,7 @@ var UserService = {
       }],
       where: _where,
       offset: offset,
-      limit: pageSize
+      limit: size
     });
   },
   /**
@@ -176,7 +176,7 @@ var UserService = {
     };
     return this.findUserBy(where, false)
       .then(function (user) {
-        debug('user: ', user)
+        debug('user: ', user);
         return user.getRoles().then(function (_roles) {
           var matched = false;
           _.forEach(_roles, function (item) {
