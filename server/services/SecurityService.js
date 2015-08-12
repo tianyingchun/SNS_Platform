@@ -15,6 +15,9 @@ var SecurityService = {
    * @return {String}          The encrpted password string.
    */
   getEncryptedPassword: function (password, salt) {
+    if (!password) {
+      throw new Error('PASSWORD_MUSTBE_REQUIRED');
+    }
     var mixPwd = password.trim() + salt + security.saltCode;
     return cryptor.md5(mixPwd);
   },
@@ -35,10 +38,12 @@ var SecurityService = {
    */
   genAccessToken: function (user) {
     var token = {
-      userId: user.userId,
+      userId: user.get('id'),
       created: Date.now()
     };
     try {
+      // FIXME: maybe we should encrypt small data e.g `id` instead an object serilizer.
+      // And fetch user info from radis cache / memory cache.
       var access_token = cryptor.encryptDES(JSON.stringify(token), security.desSecret);
       return 'Bearer ' + access_token;
     } catch (e) {
@@ -51,7 +56,6 @@ var SecurityService = {
    * @param  {Function} callback     the callback
    */
   parseAccessToken: function (access_token) {
-
     var deferred = q.defer();
     try {
       var token = JSON.parse(cryptor.decryptDES(access_token, security.desSecret));

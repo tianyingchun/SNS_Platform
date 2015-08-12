@@ -9,7 +9,8 @@ var modelName = 'Role';
 var attributes = {
   name: {
     type: Sequelize.STRING,
-    unique: true
+    unique: true,
+    allowNull: false
   },
   active: {
     type: Sequelize.BOOLEAN,
@@ -22,7 +23,7 @@ var attributes = {
   },
   systemName: {
     type: Sequelize.STRING,
-    allowNull: true,
+    allowNull: false,
     filed: 'system_name'
   }
 };

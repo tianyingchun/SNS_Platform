@@ -67,7 +67,7 @@ var UserService = {
         }
       })
       .then(function (user) {
-        debug('find user by name/email and password: ', user);
+        debug('find user by name/email and password: ', user.get());
         if (!user) {
           throw new Error('USER_SIGNIN_FAILED');
         } else {
@@ -75,7 +75,6 @@ var UserService = {
           var passwordInDb = user.get('password');
           var _password = SecurityService.getEncryptedPassword(password, salt);
           if (_password === passwordInDb) {
-            debug('user promise: ', user.then)
             return user;
           } else {
             throw new Error('USER_SIGNIN_FAILED');
@@ -148,7 +147,7 @@ var UserService = {
     }
 
     // now simple use limit, offset, maybe need to use store procedure to improve performance
-    var limit = pageIndex * (pageSize - 1);
+    var offset = pageIndex * (pageSize - 1);
 
     return UserModel.findAndCountAll({
       include: [{
@@ -156,8 +155,8 @@ var UserService = {
         as: 'roles'
       }],
       where: _where,
-      offset: pageSize,
-      limit: limit
+      offset: offset,
+      limit: pageSize
     });
   },
   /**
@@ -172,41 +171,26 @@ var UserService = {
     if (_.isString(roles)) {
       roles = [roles];
     }
-    var deferred = q.defer();
-
-    this.findUserBy({
+    var where = {
       id: user.get('id')
-    }, false).then(function (user) {
-      var _roles = user.getRoles() || [];
-      debug('the user roles: ', _roles);
-      var matched = false;
-      _[_roles].forEach(function (item) {
-        if (_.include[roles, item.get('name')]) {
-          matched = true;
-        }
+    };
+    return this.findUserBy(where, false)
+      .then(function (user) {
+        debug('user: ', user)
+        return user.getRoles().then(function (_roles) {
+          var matched = false;
+          _.forEach(_roles, function (item) {
+            var roleName = item.get('name');
+            debug('roleName:', roleName, roles);
+            if (_.include(roles, roleName)) {
+              matched = true;
+              debug('found matched role:', roleName);
+              return false;
+            }
+          });
+          return (matched ? user : null);
+        });
       });
-      if (matched === true) {
-        deferred.resolve(user.get());
-      }
-    }).catch(function (e) {
-      deferred.reject(e);
-    });
-
-    return deferred.promise;
-  },
-
-  isInCustomerRole: function (roleSystemName, onlyActivedRoles) {
-    onlyActivedRoles = _.isUndefined(onlyActivedRoles) ? true : onlyActivedRoles;
-    //TODO
-  },
-  isAdmin: function (onlyActivedRoles) {
-    return this.isInCustomerRole(systemRoleName.Administrators, onlyActivedRoles);
-  },
-  isRegistered: function (onlyActivedRoles) {
-    return this.isInCustomerRole(systemRoleName.Registered, onlyActivedRoles);
-  },
-  isGuest: function (onlyActivedRoles) {
-    return this.isInCustomerRole(systemRoleName.Guests, onlyActivedRoles);
   }
 };
 

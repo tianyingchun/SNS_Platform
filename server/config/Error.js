@@ -9,7 +9,7 @@ module.exports.Message = function (locale) {
   return {
     'USER_HAS_EXISTED': {
       code: 'USER_HAS_EXISTED',
-      message: 'User or email is already taken'
+      message: 'User or email is already taken.'
     },
     'ROLE_CAN_NOT_BE_FOUND': {
       code: 'ROLE_CAN_NOT_BE_FOUND',
@@ -21,7 +21,15 @@ module.exports.Message = function (locale) {
     },
     'GEN_ACCESS_TOKEN_FAILED': {
       code: 'GEN_ACCESS_TOKEN_FAILED',
-      message: 'access_token generated failed!'
+      message: '`access_token` generated failed.'
+    },
+    'PASSWORD_MUSTBE_REQUIRED': {
+      code: 'PASSWORD_MUSTBE_REQUIRED',
+      message: 'password must be required.'
+    },
+    'ACCESS_DENY': {
+      code: 'ACCESS_DENY',
+      message: 'access deny, you are no permission to access.'
     }
   };
 };

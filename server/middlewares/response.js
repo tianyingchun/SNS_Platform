@@ -50,12 +50,24 @@ module.exports = {
     var accept = accepts(req);
     var type = accept.type('html', 'json', 'text');
 
-    var error = {
-      message: err.message
-    };
-    delete err.status;
 
-    _.extend(error, err, ErrorMessage[err.code] || {});
+    var error = _.extend({}, err, ErrorMessage[err.code] || {});
+
+    // normalize exception structure(e.g. sequelize validation error)
+    var error = _.reduce(error, function (result, value, key) {
+      switch (key) {
+        case 'status':
+          break;
+        case 'name':
+          if (!error['code']) {
+            result['code'] = value;
+          }
+          break;
+        default:
+          result[key] = value;
+      }
+      return result;
+    }, {});
 
     if (type === 'json') {
       res.setHeader('Content-Type', 'application/json; charset=utf-8');

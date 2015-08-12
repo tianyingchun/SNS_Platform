@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var passport = require('passport');
 var BearerStrategy = require('passport-http-bearer');
+var debug = require('debug')('app:basicAuth');
 var config = require('../config');
 var lang = require('../common/lang');
 var securityService = require('../services/SecurityService');
@@ -8,11 +9,13 @@ var userService = require('../services/UserService');
 
 var AuthError = lang.createError('AuthError');
 
+// The definitions for authentication middleware.
 var AUTH_ERROR_MESSAGE = {
   'TOKEN_EMPTY': 'PARSED TOKEN IS EMPTY!',
   'TOKEN_EXPIRED': 'TOKEN HAS BEEN EXPIRED',
   'USER_UNKNOWN': 'UNKNOWN USER',
-  'NOT_MATCHED_ROLES': 'USE NOT BELONG TO REQUIRED ROLES'
+  'NOT_MATCHED_ROLES': 'USE NOT BELONG TO REQUIRED ROLES',
+  'ACCESS_DENY': 'you don\'t have permisson.'
 };
 module.exports = {
 
@@ -53,9 +56,10 @@ module.exports = {
             return userService.isCustomerInRoles(user, roles);
           }
         })
-        .then(function (userRole) {
-          if (userRole) {
-            return done(null, userRole, {
+        .then(function (userModel) {
+          if (userModel) {
+            var user = userModel.get();
+            return done(null, user, {
               scope: 'all'
             });
           } else {
@@ -69,17 +73,18 @@ module.exports = {
           }
           var params = [err];
           // capture AuthError
-          if (err instanceof AuthError) {
-            var errKey = err.code;
-            var message = AUTH_ERROR_MESSAGE[errKey] || '';
-            switch (errKey) {
-              case 'TOKEN_EMPTY':
-              case "TOKEN_EXPIRED":
-              case "USER_UNKNOWN":
-              case "NOT_MATCHED_ROLES":
-                params = [null, false, message];
-                break;
-            }
+          var errKey = err.code;
+          var message = AUTH_ERROR_MESSAGE[errKey] || '';
+          switch (errKey) {
+            case 'TOKEN_EMPTY':
+            case 'TOKEN_EXPIRED':
+            case 'USER_UNKNOWN':
+            case 'NOT_MATCHED_ROLES':
+            case 'ACCESS_DENY':
+              params = [null, false, message];
+              break;
+            default:
+              params = [null, false, message];
           }
           return done.apply(null, params);
         })

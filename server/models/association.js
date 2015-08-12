@@ -11,10 +11,12 @@ var Country = require('./Country');
 var StateProvince = require('./StateProvince');
 
 var UserRole = db.getTableName('user_role');
-Role.belongsToMany(User, {through: UserRole});
-User.belongsToMany(Role, {through: UserRole});
+// Notice that the spelling must be the exact same as the one in the association
+// in UserService query include:[model:RoleModel, as:'roles']
+Role.belongsToMany(User, {through: UserRole, as: 'users'});
+User.belongsToMany(Role, {through: UserRole, as: 'roles'});
 
-Profile.belongsTo(User);
+User.hasMany(Profile, {as: 'profiles'});
 
 // Product  //
 //-----------------------------------------//
