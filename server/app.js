@@ -20,9 +20,6 @@ require('node-jsx').install({
 
 var app = express();
 
-// debug version.
-app.set('env', config.mode);
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -56,8 +53,10 @@ app.use(function (req, res, next) {
   next(err);
 });
 
+// app.get('env') equls process.env.NODE_ENV
 // only use in development
-if (process.env.NODE_ENV === 'development') {
+if (app.get('env') === 'development') {
+  console.log('===Note: the app now in debug mode===');
   app.use(errorhandler());
 }
 

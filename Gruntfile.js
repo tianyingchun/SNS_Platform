@@ -185,8 +185,9 @@ module.exports = function (grunt) {
           nodeArgs: ['--debug'],
           env: {
             // for development, isomorphic server render react
-            NODE_ENV: 'development',
+            // can use app.get('env') in express->app.js, default is 'development'
             // require the process.env.NODE_ENV =='development' | 'production'
+            NODE_ENV: 'development',
             DEBUG: 'app:*',
             DEBUG_COLORS: true
           },
@@ -194,7 +195,12 @@ module.exports = function (grunt) {
         }
       },
       prod: {
-        script: './server/bin/www'
+        script: './server/bin/www',
+        options: {
+          env: {
+            NODE_ENV: 'production'
+          }
+        }
       }
     },
 
