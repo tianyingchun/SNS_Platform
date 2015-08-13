@@ -152,7 +152,16 @@ var UserService = {
     return UserModel.findAndCountAll({
       include: [{
         model: RoleModel,
-        as: 'roles'
+        as: 'roles',
+        attributes: ['id', 'name', 'active', 'isSystemRole', 'systemName'],
+        through: {
+          // ignore spm_user_role mapping records
+          // "spm_user_role": {
+          //   "user_id": "7e22bbe0-40d7-11e5-b331-5dd00d60cbb3",
+          //   "role_id": "7e2071f0-40d7-11e5-b331-5dd00d60cbb3"
+          // }
+          attributes: []
+        }
       }],
       where: _where,
       offset: offset,
