@@ -80,16 +80,19 @@ module.exports = {
   /**
    * Parse user token (expired,empty)
    * @example
-   *show: function (req, res, next) {
+   * show: function (req, res, next) {
    *    var user = req.authInfo;
    *   // parse successfully.
    *    if(user) {
    *       // do some thing.
    *    }
    * }
+   * 1. attach access_token='token_value' to url parameter.
+   * 2. attach 'access_token: token_value' in the body payload for post request.
+   * 3. using headers: {Authorization:'Bearer token_value'}
    */
   authToken: function () {
-    debug('basicAuth.authToken...');
+    debug('initial basicAuth.authToken...');
     return passport.authenticate('bearer', {
       session: false,
       // Set properity 'autoInfo' to request,
@@ -99,20 +102,18 @@ module.exports = {
   },
   /**
    * Note: the security midleware must be used after .authToken()
-   * @exmaples:
-   * 1. attach access_token='token_value' to url parameter.
-   * 2. attach 'access_token: token_value' in the body payload for post request.
-   * 3. using headers: {Authorization:'Bearer token_value'}
    * @param  {Array} roles the user must be in specificed roles.
    */
   security: function (roles) {
 
-    debug('basicAuth.security authentication....', roles);
+    debug('initial basicAuth.security authentication....', roles);
 
     if (roles && _.isString(roles)) {
       roles = [roles];
     }
     return function (req, res, next) {
+      debug('required roles:', roles);
+
       var user = req.authInfo;
       if (!user) {
         next(new AuthError('USER_UNKNOWN'));
