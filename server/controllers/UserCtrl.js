@@ -110,11 +110,14 @@ var UserCtrl = {
     debug("newUserInfo: ", newUserInfo);
     var user = req.authInfo;
     if (user) {
-      user.update(newUserInfo).then(function (newUser) {
-        res.send(user.toJsonValue());
-      }).catch(function (err) {
-        next(err);
-      })
+      user.update(newUserInfo, {
+          fields: ['email'] // list which fields we can update. maybe we can't update username, email.
+        })
+        .then(function (newUser) {
+          res.send(user.toJsonValue());
+        }).catch(function (err) {
+          next(err);
+        })
     } else {
       next(ErrorEnum.ACCESS_DENY);
     }
