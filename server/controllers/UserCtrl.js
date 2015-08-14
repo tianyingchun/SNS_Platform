@@ -1,8 +1,10 @@
 var Error = require('../config/Error');
+var ErrorEnum = Error.ErrorEnum;
 var UserService = require('../services/UserService');
 var SecurityService = require('../services/SecurityService');
 var lang = require('../common/lang');
 var debug = require('debug')('app:UserCtrl');
+
 var UserCtrl = {
 
   /**
@@ -26,9 +28,7 @@ var UserCtrl = {
       });
     } else {
       // given 401 to client.
-      var err = new Error('ACCESS_DENY');
-      err.status = 401;
-      next(err);
+      next(ErrorEnum.ACCESS_DENY);
     }
   },
 
@@ -41,17 +41,16 @@ var UserCtrl = {
     var userId = req.params.id;
     debug('userId:', userId);
     debug('authInfo: ', user);
-    var err = new Error('ACCESS_DENY');
-    err.status = 401;
+    var err = ErrorEnum.ACCESS_DENY;
     if (user) {
       // current user. only current user only show it's own user information.
       if (userId === user.get('id')) {
         debug('current user matched!');
         UserService.findUserById(userId).then(function (user) {
-          res.send(user.get());
+          res.send(user.toJsonValue());
         }).catch(function (err) {
           next(err);
-        })
+        });
       } else {
         next(err);
       }
@@ -74,12 +73,7 @@ var UserCtrl = {
     // return new user info to client if success.
     UserService.signup(userInfo).then(function (newUser) {
       if (newUser) {
-        var resUserInfo = {
-          id: newUser.get('id'),
-          username: newUser.get('username'),
-          email: newUser.get('email'),
-          active: newUser.get('active')
-        };
+        var resUserInfo = newUser.toJsonValue();
         res.send(resUserInfo);
       }
       res.send(null);
@@ -111,11 +105,22 @@ var UserCtrl = {
       });
   },
 
-  update: function () {
-
+  update: function (req, res, next) {
+    var newUserInfo = req.body;
+    debug("newUserInfo: ", newUserInfo);
+    var user = req.authInfo;
+    if (user) {
+      user.update(newUserInfo).then(function (newUser) {
+        res.send(user.toJsonValue());
+      }).catch(function (err) {
+        next(err);
+      })
+    } else {
+      next(ErrorEnum.ACCESS_DENY);
+    }
   },
 
-  delete: function () {
+  delete: function (req, res, next) {
 
   }
 };

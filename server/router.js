@@ -22,9 +22,9 @@ router.get('/users/:id', auth.authToken(), auth.security(['Administrators', 'Reg
 /** create a user*/
 router.post('/users', UserCtrl.create);
 /** udpate a user by id */
-router.put('/users/:id', UserCtrl.update);
+router.put('/users/:id', auth.authToken(), auth.security(['Administrators', 'Registered']), UserCtrl.update);
 /** delete a user by id */
-router.delete('/users/:id', UserCtrl.delete);
+router.delete('/users/:id', auth.authToken(), auth.security(['Administrators']), UserCtrl.delete);
 
 /** user sigin */
 router.post('/user/signin', UserCtrl.signin);

@@ -69,6 +69,27 @@ var User = sequelize.define(modelName, attributes, {
 
   // provider some instance method  for user model instance.
   instanceMethods: {
+
+    /**
+     * Provider plain json object for admin role  or registered role
+     * @param  {Boolean} allField true list all fields of user
+     * @return {Object}  Json
+     */
+    toJsonValue: function (allField) {
+      var result = this.get({
+        plain: true
+      });
+      if (allField !== true) {
+        var fields = ['id', 'username', 'email', 'active', 'deleted', 'isSystemAccount'];
+        result = _.reduce(result, function (result, value, key) {
+          if (_.includes(fields, key)) {
+            result[key] = value;
+          }
+          return result;
+        }, {});
+      }
+      return result;
+    },
     /**
      * Check if customer belong to specific roles.
      * @param  {Array}   roles the given roles to test

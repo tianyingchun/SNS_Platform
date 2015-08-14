@@ -4,6 +4,11 @@ var Error = lang.createError('BusinessError', {
 });
 // new Error('code', 'message');
 module.exports = Error;
+
+// The common Error Instance definitions.
+module.exports.ErrorEnum = {
+  'ACCESS_DENY': new Error('ACCESS_DENY').setStatus(401)
+};
 module.exports.Message = function (locale) {
   // i18n
   return {

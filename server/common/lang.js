@@ -44,7 +44,7 @@ module.exports = {
       if (false !== opts.stack) {
         Error.captureStackTrace(this, this.constructor);
       }
-      // merge extend properties.
+      // merge initial properties.
       _.extend(this, opts);
 
       this.code = code;
@@ -57,8 +57,13 @@ module.exports = {
     // inherites parentError || Error
     util.inherits(err, parent);
 
-    err.prototype.name = name;
-
+    _.extend(err.prototype, {
+      name: name,
+      setStatus: function (status) {
+        this.status = status;
+        return this;
+      }
+    });
     return err;
   },
   /**
