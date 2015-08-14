@@ -11,21 +11,53 @@ var UserCtrl = {
    */
   index: function (req, res, next) {
     // TODO. maybe we need to give multi roles and list it's corresponding user
-    var authInfo = req.authInfo;
+    var user = req.authInfo;
     var query = req.query;
     var page = query.page || 1;
     var size = query.size || 10;
     debug('get all users: get parsms: ', query);
-
-    UserService.findAllUsers(page, size).then(function (users) {
-      res.send(users);
-    }).catch(function (err) {
+    // if is admin, it null indicates permission
+    // TODO. maybe we should use privilege to authorize
+    if (user) {
+      UserService.findAllUsers(page, size).then(function (users) {
+        res.send(users);
+      }).catch(function (err) {
+        next(err);
+      });
+    } else {
+      // given 401 to client.
+      var err = new Error('ACCESS_DENY');
+      err.status = 401;
       next(err);
-    });
+    }
   },
 
-  show: function () {
-
+  /**
+   * Show User infomation
+   * @return {Promise}     The user information.
+   */
+  show: function (req, res, next) {
+    var user = req.authInfo;
+    var userId = req.params.id;
+    debug('userId:', userId);
+    debug('authInfo: ', user);
+    var err = new Error('ACCESS_DENY');
+    err.status = 401;
+    if (user) {
+      // current user. only current user only show it's own user information.
+      if (userId === user.get('id')) {
+        debug('current user matched!');
+        UserService.findUserById(userId).then(function (user) {
+          res.send(user.get());
+        }).catch(function (err) {
+          next(err);
+        })
+      } else {
+        next(err);
+      }
+    } else {
+      next(err);
+    }
   },
 
   // Create new user  and generate empty profile information

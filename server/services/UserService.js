@@ -67,7 +67,7 @@ var UserService = {
         }
       })
       .then(function (user) {
-        debug('find user by name/email and password: ', user.get());
+        debug('find user by name/email and password: ', user);
         if (!user) {
           throw new Error('USER_SIGNIN_FAILED');
         } else {
@@ -113,6 +113,7 @@ var UserService = {
     });
   },
   // Find user model instance
+  // maybe we should return profile information to client.
   findUserById: function (userId) {
     return UserModel.findById(userId);
   },
@@ -175,31 +176,7 @@ var UserService = {
    * @return {Promise}
    */
   isCustomerInRoles: function (user, roles) {
-    // no given roles, return true skip it.
-    if (!roles) roles = [];
-    if (_.isString(roles)) {
-      roles = [roles];
-    }
-    var where = {
-      id: user.get('id')
-    };
-    return this.findUserBy(where, false)
-      .then(function (user) {
-        debug('user: ', user);
-        return user.getRoles().then(function (_roles) {
-          var matched = false;
-          _.forEach(_roles, function (item) {
-            var roleName = item.get('name');
-            debug('roleName:', roleName, roles);
-            if (_.include(roles, roleName)) {
-              matched = true;
-              debug('found matched role:', roleName);
-              return false;
-            }
-          });
-          return (matched ? user : null);
-        });
-      });
+    return user.isCustomerInRoles(roles);
   }
 };
 

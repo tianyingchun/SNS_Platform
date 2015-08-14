@@ -1,10 +1,11 @@
 var _ = require('lodash');
 var Sequelize = require('sequelize');
+var debug = require('debug')('app:UserModel');
 var sequelize = require('./sequelize');
 var base = require('./base');
 var db = require('../config').db;
 var security = require('../services/securityService');
-
+var SystemRoleName = require('./enum/SystemRoleName');
 var modelName = 'User';
 
 var attributes = {
@@ -68,29 +69,71 @@ var User = sequelize.define(modelName, attributes, {
 
   // provider some instance method  for user model instance.
   instanceMethods: {
-
-    isCustomerInRoles: function (roles) {
+    /**
+     * Check if customer belong to specific roles.
+     * @param  {Array}   roles the given roles to test
+     * @param  {Boolean} onlyActivedRoles: true indicates we only query actived roles.
+     * @return {Promise} The then `parameter` is (user/null)
+     */
+    isCustomerInRoles: function (roles, onlyActivedRoles) {
       // no given roles, return true skip it.
       if (!roles) roles = [];
       if (_.isString(roles)) {
         roles = [roles];
       }
+      // ignore case sensitivity
+      roles = _.map(roles, function (role) {
+        return role.toLowerCase();
+      });
 
+      var user = this;
+      debug('instance methods: `user.isCustomerInRoles:`', roles);
 
+      // if we need to check role whitch is actived.
+      var _where = onlyActivedRoles ? {
+        active: true
+      } : null;
+
+      return user.getRoles({
+        where: _where
+      }).then(function (_roles) {
+        var matched = false;
+        _.forEach(_roles, function (item) {
+
+          // lower case
+          var roleName = item.get('name').toLowerCase();
+
+          debug('roleName:', roleName, roles);
+          if (_.include(roles, roleName)) {
+            matched = true;
+            debug('found matched role:', roleName);
+            return false;
+          }
+        });
+        return (matched ? user : null);
+      });
     },
-    // check current user if belong to sepcificed roles.
+    /**
+     * Check current user if belong to sepcificed roles.
+     * @param  {String}   roleSystemName   roleName 'administrators'
+     * @param  {Boolean}  onlyActivedRoles
+     * @return {Promise}  parameter is (user/null)
+     */
     isInCustomerRole: function (roleSystemName, onlyActivedRoles) {
-      onlyActivedRoles = _.isUndefined(onlyActivedRoles) ? true : onlyActivedRoles;
+      onlyActivedRoles = _.isUndefined(onlyActivedRoles) ? true : !!onlyActivedRoles;
+      return this.isCustomerInRoles(roleSystemName, onlyActivedRoles);
     },
-    // check current user if has admin roles
+    // Admin Role
     isAdmin: function (onlyActivedRoles) {
-
+      return this.isInCustomerRole(SystemRoleName[0], onlyActivedRoles);
     },
+    // Registered role.
     isRegistered: function (onlyActivedRoles) {
-
+      return this.isInCustomerRole(SystemRoleName[1], onlyActivedRoles);
     },
+    // Guest role
     isGuest: function (onlyActivedRoles) {
-
+      return this.isInCustomerRole(SystemRoleName[2], onlyActivedRoles);
     }
   }
 });

@@ -16,9 +16,9 @@ router.put('/products/:id', ProductCtrl.update);
 router.delete('/products/:id', ProductCtrl.delete);
 
 /** get all users */
-router.get('/users', auth.security(['Administrators']), UserCtrl.index);
+router.get('/users', auth.authToken(), auth.security(['Administrators']), UserCtrl.index);
 /** get a user by id */
-router.get('/users/:id', UserCtrl.show);
+router.get('/users/:id', auth.authToken(), auth.security(['Administrators', 'Registered']), UserCtrl.show);
 /** create a user*/
 router.post('/users', UserCtrl.create);
 /** udpate a user by id */
