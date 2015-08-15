@@ -2,7 +2,7 @@ var q = require('Q');
 var debug = require('debug')('app:InstallService');
 var RoleModel = require('../models/Role');
 var UserModel = require('../models/User');
-var SystemRoleName = require('../models/enum/SystemRoleName');
+var SystemRoleName = require('../constants/enum/SystemRoleName');
 var UserService = require('./UserService');
 
 var InstallService = {

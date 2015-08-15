@@ -5,7 +5,7 @@ var sequelize = require('./sequelize');
 var base = require('./base');
 var db = require('../config').db;
 var security = require('../services/securityService');
-var SystemRoleName = require('./enum/SystemRoleName');
+var SystemRoleName = require('../constants/enum/SystemRoleName');
 var modelName = 'User';
 
 var attributes = {
