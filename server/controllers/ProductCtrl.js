@@ -1,6 +1,5 @@
 var ProductService = require('../services/ProductService.js');
 var debug = require('debug')('app:ProductCtrl');
-var logger = require('../common/log');
 
 var ProductCtrl = {
   index: function (req, res, next) {
@@ -13,7 +12,7 @@ var ProductCtrl = {
 
   show: function (req, res, next) {
     var id = req.params.id;
-    logger.info('product id: %s', id);
+    debug('product id: %s', id);
     ProductService.findProductById(id).then(function (product) {
       res.send(product);
     }).catch(function (error) {

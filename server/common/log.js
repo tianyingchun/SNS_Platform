@@ -1,4 +1,6 @@
 // logger utilities
+// Note. we won't use this logger use require('debug')('app:module') instead.
+// in production, use forever to generation log now.
 var winston = require('winston');
 var fs = require("fs-extra");
 var path = require("path");
