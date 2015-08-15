@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var q = require('q');
 var debug = require('debug')('app:UserService');
-var Error = require('../config/Error');
+var Error = require('../constants/Error');
 var SecurityService = require('../services/SecurityService');
 var systemRoleName = require('../models/enum/SystemRoleName');
 var UserModel = require('../models/User');
@@ -168,6 +168,25 @@ var UserService = {
       offset: offset,
       limit: size
     });
+  },
+  // delete user information.
+  destroyUser: function (userId) {
+    return this.findUserById(userId)
+      .then(function (user) {
+        if (user) {
+          // can't be delete if it's system builtin account.
+          if (user.get('isSystemAccount')) {
+            throw new Error('CANT_DELETE_SYSTEM_BUILTIN_ACCOUNT');
+          } else {
+            // only flag deleted fields.
+            return user.update({
+              deleted: true
+            });
+          }
+        } else {
+          throw new Error('USER_CAN_NOT_BE_FOUND');
+        }
+      });
   },
   /**
    * Check if user have owned given foles.

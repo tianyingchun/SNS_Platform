@@ -1,7 +1,7 @@
 var q = require('Q');
 var debug = require('debug')('app:SecurityService');
 
-var Error = require('../config/Error');
+var Error = require('../constants/Error');
 var config = require('../config');
 var security = config.security;
 var cryptor = require('../common/cryptor');

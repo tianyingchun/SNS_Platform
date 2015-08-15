@@ -6,17 +6,12 @@ var config = require('../config');
 var lang = require('../common/lang');
 var securityService = require('../services/SecurityService');
 var userService = require('../services/UserService');
-
-var AuthError = lang.createError('AuthError');
-
 // The definitions for authentication middleware.
-var AUTH_ERROR_MESSAGE = {
-  'TOKEN_EMPTY': 'PARSED TOKEN IS EMPTY!',
-  'TOKEN_EXPIRED': 'TOKEN HAS BEEN EXPIRED',
-  'USER_UNKNOWN': 'UNKNOWN USER',
-  'NOT_MATCHED_ROLES': 'USE NOT BELONG TO REQUIRED ROLES',
-  'ACCESS_DENY': 'you don\'t have permisson.'
-};
+var AUTH_ERROR_MESSAGE = require('../constants/Error').Message();
+
+var AuthError = lang.createError('AuthError', {
+  status: 401
+});
 
 // The token verification handler.
 function tokenParse(req, access_token, done) {
@@ -47,20 +42,20 @@ function tokenParse(req, access_token, done) {
     .catch(function (err) {
       // console.log('err', err)
       if (_.isString(err)) {
-        err = new Error(err);
+        err = new AuthError(err);
       }
       var params = [err];
       // capture AuthError
-      var errKey = err.code;
-      var message = AUTH_ERROR_MESSAGE[errKey] || '';
-      switch (errKey) {
+      var error = AUTH_ERROR_MESSAGE[err.code] || {};
+      // debug('error: ',AUTH_ERROR_MESSAGE[err.code], error, err.code)
+      switch (error.code) {
         case 'TOKEN_EMPTY':
         case 'TOKEN_EXPIRED':
         case 'USER_UNKNOWN':
-          params = [null, false, message];
+          params = [null, false, error.message];
           break;
         default:
-          params = [null, false, message];
+          params = [null, false, error.message];
       }
       return done.apply(null, params);
     })

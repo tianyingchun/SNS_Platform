@@ -1,4 +1,4 @@
-var Error = require('../config/Error');
+var Error = require('../constants/Error');
 var ErrorEnum = Error.ErrorEnum;
 var UserService = require('../services/UserService');
 var SecurityService = require('../services/SecurityService');
@@ -84,10 +84,10 @@ var UserCtrl = {
 
   // User sigin controller
   signin: function (req, res, next) {
-    var
-      body = req.body,
+    var body = req.body,
       username = body.username || body.email,
       password = body.password;
+
     UserService.signin(username, password)
       .then(function (user) {
         if (!user) {
@@ -105,6 +105,7 @@ var UserCtrl = {
       });
   },
 
+  // Require token protect
   update: function (req, res, next) {
     var newUserInfo = req.body;
     debug("newUserInfo: ", newUserInfo);
@@ -122,9 +123,26 @@ var UserCtrl = {
       next(ErrorEnum.ACCESS_DENY);
     }
   },
-
+  // Require administrator roles permission.
   delete: function (req, res, next) {
-
+    var user = req.authInfo;
+    var userId = req.params.id;
+    // can not delete current user.
+    if (userId === user.get('id')) {
+      next(new Error('CANT_DELETE_YOUR_SELF'));
+    } else {
+      UserService.destroyUser(userId)
+        .then(function (user) {
+          debug('destoryed user..', user);
+          if (user.get('deleted')) {
+            res.send('success');
+          } else {
+            next(new Error('DESTROY_USER_FAILED'));
+          }
+        }).catch(function (err) {
+          next(err);
+        });
+    }
   }
 };
 

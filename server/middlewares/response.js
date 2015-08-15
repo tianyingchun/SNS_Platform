@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var accepts = require('accepts');
-var BizError = require('../config/Error');
+var BizError = require('../constants/Error');
 module.exports = {
   render: function (req, res, next) {
     // grab reference of render
