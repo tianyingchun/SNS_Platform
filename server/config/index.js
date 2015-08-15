@@ -40,8 +40,26 @@ var db = {
 
   }
 };
+// The redis configuration.
+var redis = {
+  port: 6379,          // Redis port
+  host: '127.0.0.1',   // Redis host
+  family: 4,           // 4 (IPv4) or 6 (IPv6)
+  // password: 'auth',
+  db: 0
+};
+
+// Mail configurations
+var mail_opts = {
+  host: 'smtp.126.com',
+  port: 25,
+  auth: {
+    user: 'sns@126.com',
+    pass: 'sns'
+  }
+};
 // locales config.
-var locales = ['en','zh'];
+var locales = ['en', 'zh'];
 
 var url = {
   appBaseUrl: 'http://localhost:3000{0}',
@@ -51,6 +69,8 @@ var url = {
 // exports site configuration.
 module.exports = _.extend({}, config, {
   db: db,
+  redis: redis,
+  mail: mail_opts,
   node: node,
   security: security,
   url: url,

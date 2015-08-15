@@ -4,7 +4,7 @@ var UserService = require('../services/UserService');
 var SecurityService = require('../services/SecurityService');
 var lang = require('../common/lang');
 var debug = require('debug')('app:UserCtrl');
-
+var redis = require('../common/redis');
 var UserCtrl = {
 
   /**
@@ -88,6 +88,9 @@ var UserCtrl = {
       username = body.username || body.email,
       password = body.password;
 
+    redis.get('token', function (err, result) {
+      debug('redis: token:', result);
+    });
     UserService.signin(username, password)
       .then(function (user) {
         if (!user) {
@@ -95,6 +98,7 @@ var UserCtrl = {
         } else {
           // send access_token to client.
           var access_token = SecurityService.genAccessToken(user);
+          redis.set('token', access_token);
           res.send({
             access_token: access_token
           });

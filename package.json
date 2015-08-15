@@ -43,7 +43,9 @@
     "superagent": "^1.2.0",
     "winston": "~1.0.1",
     "accepts": "^1.2.12",
-    "locale": "0.0.20"
+    "locale": "0.0.20",
+    "nodemailer": "~1.4.0",
+    "ioredis": "~1.7.4"
   },
   "devDependencies": {
     "browserify": "*",

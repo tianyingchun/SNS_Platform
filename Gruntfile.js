@@ -189,7 +189,7 @@ module.exports = function (grunt) {
             // require the process.env.NODE_ENV =='development' | 'production'
             NODE_ENV: 'development',
             // enable logging: DEBUG: app:*, expressjs, node,..
-            DEBUG: 'app:*',
+            DEBUG: 'app:*,ioredis:*',
             DEBUG_COLORS: true
           },
           ext: 'js,jsx,html,ejs'
