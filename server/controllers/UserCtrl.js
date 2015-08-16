@@ -42,17 +42,31 @@ var UserCtrl = {
     debug('userId:', userId);
     debug('authInfo: ', user);
     var err = ErrorEnum.ACCESS_DENY;
+
+    function showUserInfo() {
+      UserService.findUserById(userId).then(function (user) {
+        if (user) {
+          res.send(user.toJsonValue());
+        } else {
+          next(new Error('USER_UNKNOWN'));
+        }
+      }).catch(function (err) {
+        next(err);
+      });
+    }
     if (user) {
       // current user. only current user only show it's own user information.
       if (userId === user.get('id')) {
         debug('current user matched!');
-        UserService.findUserById(userId).then(function (user) {
-          res.send(user.toJsonValue());
-        }).catch(function (err) {
-          next(err);
-        });
+        showUserInfo();
       } else {
-        next(err);
+        user.isAdmin().then(function (user) {
+          if (!user) {
+            next(err);
+          } else {
+            showUserInfo();
+          }
+        });
       }
     } else {
       next(err);
@@ -75,6 +89,8 @@ var UserCtrl = {
       if (newUser) {
         var resUserInfo = newUser.toJsonValue();
         res.send(resUserInfo);
+      } else {
+        next(new Error('SIGN_UP_FAILED'));
       }
     }).catch(function (err) {
       next(err);
@@ -119,7 +135,11 @@ var UserCtrl = {
     function doUpdate() {
       UserService.updateUser(userId, newUserInfo, ['email'])
         .then(function (updatedUser) {
-          res.send(updatedUser.toJsonValue());
+          if (updatedUser) {
+            res.send(updatedUser.toJsonValue());
+          } else {
+            next(new Error('UPDATE_USER_FAILED'));
+          }
         })
         .catch(function (err) {
           next(err);
@@ -132,7 +152,7 @@ var UserCtrl = {
       } else {
         user.isAdmin().then(function (user) {
           if (!user) {
-            next(new Error('ACCESS_DENY'));
+            next(ErrorEnum.ACCESS_DENY);
           } else {
             debug('current user have admin role...');
             doUpdate(user);

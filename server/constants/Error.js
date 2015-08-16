@@ -76,6 +76,14 @@ module.exports.Message = function (locale) {
     'CANT_DELETE_SYSTEM_BUILTIN_ACCOUNT': {
       code: "CANT_DELETE_SYSTEM_BUILTIN_ACCOUNT",
       message: 'can\'t delete system builtin account.'
+    },
+    'UPDATE_USER_FAILED': {
+      code: 'UPDATE_USER_FAILED',
+      message: 'update user failed.'
+    },
+    'SIGN_UP_FAILED':{
+      code:'SIGN_UP_FAILED',
+      message:'user sign up failed.'
     }
   };
 };
