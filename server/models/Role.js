@@ -22,8 +22,9 @@ var attributes = {
     field: 'is_system_role'
   },
   systemName: {
-    type: Sequelize.STRING,
+    type: Sequelize.INTEGER,
     allowNull: false,
+    unique: true,
     filed: 'system_name'
   }
 };

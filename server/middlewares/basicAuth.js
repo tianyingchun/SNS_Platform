@@ -96,13 +96,15 @@ module.exports = {
   },
   /**
    * Note: the security midleware must be used after .authToken()
-   * @param  {Array} roles the user must be in specificed roles.
+   * @param  {Array<Number>} roles the user must be in specificed roles.
+   *         We can use [SystemRoleName.Administrator] ==>0
+   *         can't use SystemRoleName[0] to match roles
    */
   security: function (roles) {
 
     debug('initial basicAuth.security authentication....', roles);
 
-    if (roles && _.isString(roles)) {
+    if (roles && _.isNumber(roles)) {
       roles = [roles];
     }
     return function (req, res, next) {

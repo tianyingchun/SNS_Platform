@@ -92,7 +92,9 @@ var User = sequelize.define(modelName, attributes, {
     },
     /**
      * Check if customer belong to specific roles.
-     * @param  {Array}   roles the given roles to test
+     * @param  {Array<Number>}   roles the given roles to test,it's number type
+     *                   Note. we can use [SystemRoleName.Administrator] ==>0
+     *                   can't use SystemRoleName[0] to match roles.
      * @param  {Boolean} onlyActivedRoles: true indicates we only query actived roles.
      * @return {Promise} The then `parameter` is (user/null)
      */
@@ -102,11 +104,6 @@ var User = sequelize.define(modelName, attributes, {
       if (_.isString(roles)) {
         roles = [roles];
       }
-      // ignore case sensitivity
-      roles = _.map(roles, function (role) {
-        return role.toLowerCase();
-      });
-
       var user = this;
       debug('instance methods: `user.isCustomerInRoles:`', roles);
 
@@ -121,13 +118,13 @@ var User = sequelize.define(modelName, attributes, {
         var matched = false;
         _.forEach(_roles, function (item) {
 
-          // lower case
-          var roleName = item.get('name').toLowerCase();
+          // role system name it's number type, mapping to 'constants/enum/SystemRoleName'
+          var roleSysName = item.get('systemName');
 
-          debug('roleName:', roleName, roles);
-          if (_.include(roles, roleName)) {
+          debug('roleSysName:', roleSysName, roles);
+          if (_.include(roles, roleSysName)) {
             matched = true;
-            debug('found matched role:', roleName);
+            debug('found matched role:', SystemRoleName[roleSysName]);
             return false;
           }
         });
@@ -136,7 +133,7 @@ var User = sequelize.define(modelName, attributes, {
     },
     /**
      * Check current user if belong to sepcificed roles.
-     * @param  {String}   roleSystemName   roleName 'administrators'
+     * @param  {Number}   roleSystemName   roleName SystemRoleName['administrators'] ==>0
      * @param  {Boolean}  onlyActivedRoles
      * @return {Promise}  parameter is (user/null)
      */
@@ -146,15 +143,15 @@ var User = sequelize.define(modelName, attributes, {
     },
     // Admin Role
     isAdmin: function (onlyActivedRoles) {
-      return this.isInCustomerRole(SystemRoleName[0], onlyActivedRoles);
+      return this.isInCustomerRole(SystemRoleName.Administrators, onlyActivedRoles);
     },
     // Registered role.
     isRegistered: function (onlyActivedRoles) {
-      return this.isInCustomerRole(SystemRoleName[1], onlyActivedRoles);
+      return this.isInCustomerRole(SystemRoleName.Registered, onlyActivedRoles);
     },
     // Guest role
-    isGuest: function (onlyActivedRoles) {
-      return this.isInCustomerRole(SystemRoleName[2], onlyActivedRoles);
+    isPublisher: function (onlyActivedRoles) {
+      return this.isInCustomerRole(SystemRoleName.Publisher, onlyActivedRoles);
     }
   }
 });

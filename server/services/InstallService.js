@@ -10,22 +10,22 @@ var InstallService = {
   initialRoles: function () {
     var roles = [];
     roles.push({
-      name: 'Administrators',
+      name: SystemRoleName[0],
       isSystemRole: true,
       active: true,
       systemName: SystemRoleName.Administrators
     });
     roles.push({
-      name: 'Registered',
+      name: SystemRoleName[1],
       isSystemRole: true,
       active: true,
       systemName: SystemRoleName.Registered
     });
     roles.push({
-      name: 'Guests',
+      name: SystemRoleName[2],
       isSystemRole: true,
       active: true,
-      systemName: SystemRoleName.Guests
+      systemName: SystemRoleName.Publisher
     });
 
     return RoleModel.bulkCreate(roles);
@@ -45,7 +45,7 @@ var InstallService = {
       debug('init user done!');
       return RoleModel.findOne({
         where: {
-          name: 'Administrators'
+          systemName: SystemRoleName.Administrators
         }
       }).then(function (role) {
         debug('add Administrators for user');

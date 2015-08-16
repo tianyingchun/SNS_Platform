@@ -4,7 +4,7 @@ var SystemRoleName = lang.createEnum(
   [
     'Administrators',
     'Registered',
-    'Guests'
+    'Publisher'
   ]
 );
 

@@ -2,7 +2,7 @@ var router = require('express').Router();
 var auth = require('./middlewares/basicAuth');
 var ProductCtrl = require('./controllers/ProductCtrl');
 var UserCtrl = require('./controllers/UserCtrl');
-
+var RoleName = require('./constants/enum/SystemRoleName');
 
 /** get all products */
 router.get('/products', ProductCtrl.index);
@@ -16,15 +16,15 @@ router.put('/products/:id', ProductCtrl.update);
 router.delete('/products/:id', ProductCtrl.delete);
 
 /** get all users */
-router.get('/users', auth.authToken(), auth.security(['Administrators']), UserCtrl.index);
+router.get('/users', auth.authToken(), auth.security([RoleName.Administrators]), UserCtrl.index);
 /** get a user by id */
-router.get('/users/:id', auth.authToken(), auth.security(['Administrators', 'Registered']), UserCtrl.show);
+router.get('/users/:id', auth.authToken(), auth.security([RoleName.Administrators, RoleName.Registered]), UserCtrl.show);
 /** create a user*/
 router.post('/users', UserCtrl.create);
 /** udpate a user by id */
-router.put('/users/:id', auth.authToken(), auth.security(['Administrators', 'Registered']), UserCtrl.update);
+router.put('/users/:id', auth.authToken(), auth.security([RoleName.Administrators, RoleName.Registered]), UserCtrl.update);
 /** delete a user by id */
-router.delete('/users/:id', auth.authToken(), auth.security(['Administrators']), UserCtrl.delete);
+router.delete('/users/:id', auth.authToken(), auth.security([RoleName.Administrators]), UserCtrl.delete);
 
 /** user sigin */
 router.post('/user/signin', UserCtrl.signin);
