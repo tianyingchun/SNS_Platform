@@ -76,7 +76,6 @@ var UserCtrl = {
         var resUserInfo = newUser.toJsonValue();
         res.send(resUserInfo);
       }
-      res.send(null);
     }).catch(function (err) {
       next(err);
     });
@@ -88,20 +87,20 @@ var UserCtrl = {
       username = body.username || body.email,
       password = body.password;
 
-    redis.get('token', function (err, result) {
-      debug('redis: token:', result);
-    });
     UserService.signin(username, password)
       .then(function (user) {
         if (!user) {
           next(new Error('USER_SIGNIN_FAILED'));
         } else {
           // send access_token to client.
-          var access_token = SecurityService.genAccessToken(user);
-          redis.set('token', access_token);
-          res.send({
-            access_token: access_token
-          });
+          SecurityService.genAccessToken(user)
+            .then(function (access_token) {
+              res.send({
+                access_token: access_token
+              });
+            }).catch(function (err) {
+              next(err);
+            });
         }
       })
       .catch(function (err) {

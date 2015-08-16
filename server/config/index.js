@@ -28,7 +28,7 @@ var db = {
   options: {
     dialect: 'mysql',
     host: 'localhost',
-    port: 3307,
+    port: 3306,
     timezone: '+08:00',
     logging: console.log
   },

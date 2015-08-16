@@ -1,12 +1,10 @@
 var q = require('Q');
 var debug = require('debug')('app:SecurityService');
-
+var cryptor = require('../common/cryptor');
 var Error = require('../constants/Error');
 var config = require('../config');
 var security = config.security;
-var cryptor = require('../common/cryptor');
-
-
+var AccessToken = require('../common/AccessToken');
 var SecurityService = {
   /**
    * Generate encypted password with security code and password salt.
@@ -37,18 +35,25 @@ var SecurityService = {
    * @return {String}      access_token
    */
   genAccessToken: function (user) {
-    var token = {
-      userId: user.get('id'),
-      created: Date.now()
-    };
+    var deferred = q.defer();
     try {
-      // FIXME: maybe we should encrypt small data e.g `id` instead an object serilizer.
-      // And fetch user info from radis cache / memory cache.
-      var access_token = cryptor.encryptDES(JSON.stringify(token), security.desSecret);
-      return 'Bearer ' + access_token;
-    } catch (e) {
-      throw new Error('GEN_ACCESS_TOKEN_FAILED');
+      if (user) {
+        debug('SecurityService->genAccessToken...');
+        AccessToken.genToken(user, function (err, access_token) {
+          if (err) {
+            deferred.reject(err);
+          } else {
+            deferred.resolve('Bearer ' + access_token);
+          }
+        });
+      } else {
+        deferred.reject(new Error('USER_UNKNOWN'));
+      }
+    } catch (err) {
+      deferred.reject(new Error('GEN_ACCESS_TOKEN_FAILED'));
     }
+    return deferred.promise;
+
   },
   /**
    * Give method to verify current status of access_token from client
@@ -58,10 +63,16 @@ var SecurityService = {
   parseAccessToken: function (access_token) {
     var deferred = q.defer();
     try {
-      var token = JSON.parse(cryptor.decryptDES(access_token, security.desSecret));
-      deferred.resolve(token);
-    } catch (e) {
-      deferred.reject(e);
+      AccessToken.parseToken(access_token, function (err, token) {
+        if (err) {
+          deferred.reject(err);
+        } else {
+          debug('parseAccessToken-> from redis `token` is %s', token);
+          deferred.resolve(token);
+        }
+      });
+    } catch (err) {
+      deferred.reject(err);
     }
     return deferred.promise;
   }

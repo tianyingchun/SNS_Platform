@@ -12,21 +12,29 @@ module.exports.ErrorEnum = {
 module.exports.Message = function (locale) {
   // i18n
   return {
+    'ACCESS_TOKEN_REQUIRED_USER_ID': {
+      code: 'ACCESS_TOKEN_REQUIRED_USERID',
+      message: 'access token required user id.'
+    },
+    'ACCESS_TOKEN_REDIS_QUERY_FAILED': {
+      code: 'TOKEN_PARSE_FAILED',
+      message: 'the token has been expired.'
+    },
     'TOKEN_EMPTY': {
       code: 'TOKEN_EMPTY',
-      message: 'PARSED TOKEN IS EMPTY!'
+      message: 'parsed token is empty.'
     },
     'TOKEN_EXPIRED': {
       code: 'TOKEN_EXPIRED',
-      message: 'TOKEN HAS BEEN EXPIRED'
+      message: 'the token has been expired.'
     },
     'USER_UNKNOWN': {
       code: 'USER_UNKNOWN',
-      message: 'UNKNOWN USER'
+      message: 'unknown user.'
     },
     'NOT_MATCHED_ROLES': {
       code: 'NOT_MATCHED_ROLES',
-      message: 'USE NOT BELONG TO REQUIRED ROLES'
+      message: 'use not belong to required roles.'
     },
     'ACCESS_DENY': {
       code: 'ACCESS_DENY',
@@ -59,7 +67,7 @@ module.exports.Message = function (locale) {
 
     'CANT_DELETE_YOUR_SELF': {
       code: 'CANT_DELETE_YOUR_SELF',
-      message: 'can\'t delete your selft'
+      message: 'can\'t delete yourself.'
     },
     'DESTROY_USER_FAILED': {
       code: 'DESTROY_USER_FAILED',
@@ -67,7 +75,7 @@ module.exports.Message = function (locale) {
     },
     'CANT_DELETE_SYSTEM_BUILTIN_ACCOUNT': {
       code: "CANT_DELETE_SYSTEM_BUILTIN_ACCOUNT",
-      message: 'can\'t delete system builtin account'
+      message: 'can\'t delete system builtin account.'
     }
   };
 };

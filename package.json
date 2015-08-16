@@ -44,6 +44,7 @@
     "winston": "~1.0.1",
     "accepts": "^1.2.12",
     "locale": "0.0.20",
+    "moment": "~2.10.6",
     "nodemailer": "~1.4.0",
     "ioredis": "~1.7.4"
   },

@@ -2,7 +2,6 @@ var _ = require('lodash');
 var passport = require('passport');
 var BearerStrategy = require('passport-http-bearer');
 var debug = require('debug')('app:basicAuth');
-var config = require('../config');
 var lang = require('../common/lang');
 var securityService = require('../services/SecurityService');
 var userService = require('../services/UserService');
@@ -23,7 +22,7 @@ function tokenParse(req, access_token, done) {
         throw new AuthError('TOKEN_EMPTY');
       }
       // token_expired
-      if (Math.round((Date.now() - token.created) / 1000) > config.security.tokenLife) {
+      if (token.hasExpired()) {
         // if we need remove this access_token if we use radis cache.
         throw new AuthError('TOKEN_EXPIRED');
       }
