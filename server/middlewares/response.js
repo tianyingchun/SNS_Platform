@@ -28,7 +28,7 @@ module.exports = {
    */
   clientErrorHandler: function (err, req, res, next) {
 
-    locale = req.locale || 'en_us';
+    var locale = req.locale || 'en_us';
 
     var ErrorMessage = BizError.Message(locale);
 

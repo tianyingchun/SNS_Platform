@@ -4,6 +4,7 @@ var redis = require('./redis');
 var cryptor = require('./cryptor');
 var security = require('../config').security;
 var Error = require('../constants/Error');
+var debug = require('debug')('app:AccessToken');
 
 function AccessToken(userId, access_token) {
   this.userId = userId;
@@ -75,8 +76,9 @@ module.exports = {
     var at = new AccessToken(null, access_token);
     redis.get(access_token, function (err, tokenData) {
       if (err || !tokenData) {
+        debug('parseToken()->tokenData: ', tokenData);
         // query redis exception or redis token expired.
-        callback(new Error('ACCESS_TOKEN_REDIS_QUERY_FAILED'));
+        callback(new Error('TOKEN.REDIS_QUERY_FAILED'));
       } else {
         //return `AccessToken` instance.
         callback(err, at.deSerialize(tokenData));

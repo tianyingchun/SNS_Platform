@@ -5,8 +5,6 @@ var debug = require('debug')('app:basicAuth');
 var lang = require('../common/lang');
 var securityService = require('../services/SecurityService');
 var userService = require('../services/UserService');
-// The definitions for authentication middleware.
-var AUTH_ERROR_MESSAGE = require('../constants/Error').Message();
 
 var AuthError = lang.createError('AuthError', {
   status: 401
@@ -14,6 +12,11 @@ var AuthError = lang.createError('AuthError', {
 
 // The token verification handler.
 function tokenParse(req, access_token, done) {
+
+  var locale = req.locale || 'en_us';
+  // The definitions for authentication middleware.
+  var AUTH_ERROR_MESSAGE = require('../constants/Error').Message(locale);
+
   securityService
     .parseAccessToken(access_token)
     .then(function (token) {
@@ -39,14 +42,13 @@ function tokenParse(req, access_token, done) {
       }
     })
     .catch(function (err) {
-      // console.log('err', err)
       if (_.isString(err)) {
         err = new AuthError(err);
       }
       var params = [err];
       // capture AuthError
-      var error = AUTH_ERROR_MESSAGE[err.code] || {};
-      // debug('error: ',AUTH_ERROR_MESSAGE[err.code], error, err.code)
+      var error = AUTH_ERROR_MESSAGE.get(err.code) || {};
+      debug('basicAuth.tokenParse: ', error, error.code);
       switch (error.code) {
         case 'TOKEN.EMPTY':
         case 'TOKEN.EXPIRED':
