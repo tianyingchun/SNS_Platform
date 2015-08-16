@@ -17,11 +17,10 @@ var attributes = {
   // Product, Category ,ProductTag...
   entityName: {
     type: Sequelize.STRING,
-    field: 'entity_type'
+    field: 'entity_name'
   },
   active: {
     type: Sequelize.BOOLEAN,
-    field: 'entity_type',
     defaultValue: true
   }
 };

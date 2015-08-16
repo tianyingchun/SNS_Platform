@@ -23,9 +23,7 @@ var attributes = {
   },
   systemName: {
     type: Sequelize.INTEGER,
-    allowNull: false,
-    unique: true,
-    filed: 'system_name'
+    field: 'system_name'
   }
 };
 

@@ -10,12 +10,12 @@ var UserService = {
   /**
    * register an new user
    * @param  {Object} user User info
-   * @param  {Array} user roles, default is 'Registered'
+   * @param  {Array<Number>} user roles, default is 'Registered'
    * @return {promise}
    */
   signup: function (user, roles) {
-    if (!roles) roles = ['Registered'];
-    if (_.isString(roles)) {
+    if (!roles) roles = [systemRoleName.Registered];
+    if (_.isNumber(roles)) {
       roles = [roles];
     }
     // Lowry: return this promise to controller.
@@ -38,7 +38,7 @@ var UserService = {
         debug('user create successful');
         return RoleModel.findAll({
           where: {
-            name: {
+            systemName: {
               $in: roles
             }
           }
