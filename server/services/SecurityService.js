@@ -14,7 +14,7 @@ var SecurityService = {
    */
   getEncryptedPassword: function (password, salt) {
     if (!password) {
-      throw new Error('PASSWORD_MUSTBE_REQUIRED');
+      throw new Error('USER.PASSWORD_MUSTBE_REQUIRED');
     }
     var mixPwd = password.trim() + salt + security.saltCode;
     return cryptor.md5(mixPwd);
@@ -47,10 +47,10 @@ var SecurityService = {
           }
         });
       } else {
-        deferred.reject(new Error('USER_UNKNOWN'));
+        deferred.reject(new Error('USER.UNKNOWN'));
       }
     } catch (err) {
-      deferred.reject(new Error('GEN_ACCESS_TOKEN_FAILED'));
+      deferred.reject(new Error('TOKEN.GEN_ACCESS_TOKEN_FAILED'));
     }
     return deferred.promise;
 

@@ -28,7 +28,7 @@ module.exports = {
    */
   clientErrorHandler: function (err, req, res, next) {
 
-    locale = 'en_us';
+    locale = req.locale || 'en_us';
 
     var ErrorMessage = BizError.Message(locale);
 
@@ -51,7 +51,7 @@ module.exports = {
     var type = accept.type('html', 'json', 'text');
 
 
-    var error = _.extend({}, err, ErrorMessage[err.code] || {});
+    var error = _.extend({}, err, ErrorMessage.get(err.code) || {});
 
     // normalize exception structure(e.g. sequelize validation error)
     var error = _.reduce(error, function (result, value, key) {

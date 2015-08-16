@@ -19,19 +19,19 @@ function tokenParse(req, access_token, done) {
     .then(function (token) {
       debug('parsed token: ', token);
       if (!token) {
-        throw new AuthError('TOKEN_EMPTY');
+        throw new AuthError('TOKEN.EMPTY');
       }
       // token_expired
       if (token.hasExpired()) {
         // if we need remove this access_token if we use radis cache.
-        throw new AuthError('TOKEN_EXPIRED');
+        throw new AuthError('TOKEN.EXPIRED');
       }
       // return user if found.
       return userService.findUserById(token.userId);
     })
     .then(function (user) {
       if (!user) {
-        throw new AuthError('USER_UNKNOWN');
+        throw new AuthError('USER.UNKNOWN');
       } else {
         return done(null, user, {
           scope: 'all'
@@ -48,9 +48,9 @@ function tokenParse(req, access_token, done) {
       var error = AUTH_ERROR_MESSAGE[err.code] || {};
       // debug('error: ',AUTH_ERROR_MESSAGE[err.code], error, err.code)
       switch (error.code) {
-        case 'TOKEN_EMPTY':
-        case 'TOKEN_EXPIRED':
-        case 'USER_UNKNOWN':
+        case 'TOKEN.EMPTY':
+        case 'TOKEN.EXPIRED':
+        case 'USER.UNKNOWN':
           params = [null, false, error.message];
           break;
         default:
@@ -116,13 +116,13 @@ module.exports = {
 
       var user = req.authInfo;
       if (!user) {
-        next(new AuthError('USER_UNKNOWN'));
+        next(new AuthError('USER.UNKNOWN'));
       } else {
         user.isCustomerInRoles(roles).then(function (user) {
           if (user) {
             next();
           } else {
-            next(new AuthError('NOT_MATCHED_ROLES'));
+            next(new AuthError('ROLE.NOT_MATCHED_ROLES'));
           }
         });
       }

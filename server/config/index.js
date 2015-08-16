@@ -42,9 +42,9 @@ var db = {
 };
 // The redis configuration.
 var redis = {
-  port: 6379,          // Redis port
-  host: '127.0.0.1',   // Redis host
-  family: 4,           // 4 (IPv4) or 6 (IPv6)
+  port: 6379, // Redis port
+  host: '127.0.0.1', // Redis host
+  family: 4, // 4 (IPv4) or 6 (IPv6)
   // password: 'auth',
   db: 0
 };
@@ -58,8 +58,8 @@ var mail_opts = {
     pass: 'sns'
   }
 };
-// locales config.
-var locales = ['en', 'zh'];
+// locales config, default is 'en_us' must be placed index=0
+var locales = ['en_us','zh_cn'];
 
 var url = {
   appBaseUrl: 'http://localhost:3000{0}',

@@ -33,7 +33,7 @@ var UserService = {
         if (!found) {
           return UserModel.create(user);
         } else {
-          throw new Error('USER_HAS_EXISTED');
+          throw new Error('USER.HAS_EXISTED');
         }
       })
       .then(function (newUser) {
@@ -51,7 +51,7 @@ var UserService = {
               return newUser;
             });
           } else {
-            throw new Error('ROLE_CAN_NOT_BE_FOUND');
+            throw new Error('ROLE.CAN_NOT_BE_FOUND');
           }
         });
       });
@@ -71,7 +71,7 @@ var UserService = {
       .then(function (user) {
         debug('find user by name/email and password: ', user);
         if (!user) {
-          throw new Error('USER_SIGNIN_FAILED');
+          throw new Error('USER.SIGNIN_FAILED');
         } else {
           var salt = user.get('passwordSalt');
           var passwordInDb = user.get('password');
@@ -79,7 +79,7 @@ var UserService = {
           if (_password === passwordInDb) {
             return user;
           } else {
-            throw new Error('USER_SIGNIN_FAILED');
+            throw new Error('USER.SIGNIN_FAILED');
           }
         }
       });
@@ -193,7 +193,7 @@ var UserService = {
         if (user) {
           // can't be delete if it's system builtin account.
           if (user.get('isSystemAccount')) {
-            throw new Error('CANT_DELETE_SYSTEM_BUILTIN_ACCOUNT');
+            throw new Error('USER.CANT_DELETE_SYSTEM_BUILTIN_ACCOUNT');
           } else {
             // only flag deleted fields.
             return user.update({
@@ -201,7 +201,7 @@ var UserService = {
             });
           }
         } else {
-          throw new Error('USER_CAN_NOT_BE_FOUND');
+          throw new Error('ROLE.CAN_NOT_BE_FOUND');
         }
       });
   },

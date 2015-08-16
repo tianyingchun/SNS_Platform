@@ -48,7 +48,7 @@ var UserCtrl = {
         if (user) {
           res.send(user.toJsonValue());
         } else {
-          next(new Error('USER_UNKNOWN'));
+          next(new Error('USER.UNKNOWN'));
         }
       }).catch(function (err) {
         next(err);
@@ -90,7 +90,7 @@ var UserCtrl = {
         var resUserInfo = newUser.toJsonValue();
         res.send(resUserInfo);
       } else {
-        next(new Error('SIGN_UP_FAILED'));
+        next(new Error('USER.SIGN_UP_FAILED'));
       }
     }).catch(function (err) {
       next(err);
@@ -106,7 +106,7 @@ var UserCtrl = {
     UserService.signin(username, password)
       .then(function (user) {
         if (!user) {
-          next(new Error('USER_SIGNIN_FAILED'));
+          next(new Error('USER.SIGNIN_FAILED'));
         } else {
           // send access_token to client.
           SecurityService.genAccessToken(user)
@@ -138,7 +138,7 @@ var UserCtrl = {
           if (updatedUser) {
             res.send(updatedUser.toJsonValue());
           } else {
-            next(new Error('UPDATE_USER_FAILED'));
+            next(new Error('USER.UPDATE_USER_FAILED'));
           }
         })
         .catch(function (err) {
@@ -172,7 +172,7 @@ var UserCtrl = {
     var userId = req.params.id;
     // can not delete current user.
     if (userId === user.get('id')) {
-      next(new Error('CANT_DELETE_YOUR_SELF'));
+      next(new Error('USER.CANT_DELETE_YOUR_SELF'));
     } else {
       UserService.destroyUser(userId)
         .then(function (user) {
@@ -180,7 +180,7 @@ var UserCtrl = {
           if (user.get('deleted')) {
             res.send('success');
           } else {
-            next(new Error('DESTROY_USER_FAILED'));
+            next(new Error('USER.DESTROY_FAILED'));
           }
         }).catch(function (err) {
           next(err);
