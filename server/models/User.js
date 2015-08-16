@@ -100,10 +100,13 @@ var User = sequelize.define(modelName, attributes, {
      */
     isCustomerInRoles: function (roles, onlyActivedRoles) {
       // no given roles, return true skip it.
-      if (!roles) roles = [];
-      if (_.isString(roles)) {
+      if (_.isUndefined(roles)) {
+        roles = [];
+      }
+      if (!_.isArray(roles)) {
         roles = [roles];
       }
+
       var user = this;
       debug('instance methods: `user.isCustomerInRoles:`', roles);
 

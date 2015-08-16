@@ -104,9 +104,13 @@ module.exports = {
 
     debug('initial basicAuth.security authentication....', roles);
 
-    if (roles && _.isNumber(roles)) {
+    if (_.isUndefined(roles)) {
+      roles = [];
+    }
+    if (!_.isArray(roles)) {
       roles = [roles];
     }
+
     return function (req, res, next) {
       debug('required roles:', roles);
 

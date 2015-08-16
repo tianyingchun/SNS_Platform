@@ -113,15 +113,35 @@ var UserCtrl = {
     var newUserInfo = req.body;
     debug("newUserInfo: ", newUserInfo);
     var user = req.authInfo;
-    if (user) {
-      user.update(newUserInfo, {
-          fields: ['email'] // list which fields we can update. maybe we can't update username, email.
+    var userId = req.params.id;
+
+    // do update db.
+    function doUpdate() {
+      UserService.updateUser(userId, newUserInfo, ['email'])
+        .then(function (updatedUser) {
+          res.send(updatedUser.toJsonValue());
         })
-        .then(function (newUser) {
-          res.send(user.toJsonValue());
+        .catch(function (err) {
+          next(err);
+        });
+    }
+    if (user) {
+      // only can update own userinfo except you are administrator role.
+      if (userId === user.get('id')) {
+        doUpdate(user);
+      } else {
+        user.isAdmin().then(function (user) {
+          if (!user) {
+            next(new Error('ACCESS_DENY'));
+          } else {
+            debug('current user have admin role...');
+            doUpdate(user);
+          }
         }).catch(function (err) {
           next(err);
-        })
+        });
+      }
+
     } else {
       next(ErrorEnum.ACCESS_DENY);
     }

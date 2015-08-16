@@ -14,8 +14,10 @@ var UserService = {
    * @return {promise}
    */
   signup: function (user, roles) {
-    if (!roles) roles = [systemRoleName.Registered];
-    if (_.isNumber(roles)) {
+    if (_.isUndefined(roles)) {
+      roles = [systemRoleName.Registered];
+    }
+    if (!_.isArray(roles)) {
       roles = [roles];
     }
     // Lowry: return this promise to controller.
@@ -126,6 +128,21 @@ var UserService = {
     return this.findUserBy({
       email: email
     });
+  },
+  /**
+   * Update specifc user info, if admin role can update any user infomation
+   * otherwise only can update itself.
+   * @param  {String} userId   the userid
+   * @param  {Object} userInfo the new user data
+   * @param  {Array} fields   the fields you want to specific column
+   *                          list which fields we can update. maybe we can't update username, email.
+   * @return {Promise}
+   */
+  updateUser: function (userId, userInfo, fields) {
+    return this.findUserById(userId)
+      .then(function (user) {
+        return user.update(userInfo, fields || {});
+      });
   },
   /**
    * Find all users with corresponding role data allow us pagination.
