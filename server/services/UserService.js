@@ -56,7 +56,6 @@ var UserService = {
         });
       });
   },
-
   // Login with username, password
   signin: function (username, password) {
     return UserModel.findOne({
@@ -83,11 +82,6 @@ var UserService = {
           }
         }
       });
-  },
-
-  // Log out current session.
-  signout: function () {
-
   },
   /**
    * Find user by some conditions
@@ -208,7 +202,7 @@ var UserService = {
   /**
    * Check if user have owned given foles.
    * @param  {Object} user   user model instance.
-   * @param  {Array|String}  roles
+   * @param  {Array|Number}  roles
    * @return {Promise}
    */
   isCustomerInRoles: function (user, roles) {

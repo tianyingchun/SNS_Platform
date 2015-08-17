@@ -36,6 +36,9 @@ function tokenParse(req, access_token, done) {
       if (!user) {
         throw new AuthError('USER.UNKNOWN');
       } else {
+        // assign access_token to parsed user.
+        user.access_token = access_token;
+
         return done(null, user, {
           scope: 'all'
         });

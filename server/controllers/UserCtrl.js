@@ -99,9 +99,9 @@ var UserCtrl = {
 
   // User sigin controller
   signin: function (req, res, next) {
-    var body = req.body,
-      username = body.username || body.email,
-      password = body.password;
+    var body = req.body;
+    var username = body.username || body.email;
+    var password = body.password;
 
     UserService.signin(username, password)
       .then(function (user) {
@@ -123,13 +123,36 @@ var UserCtrl = {
         next(err);
       });
   },
+  // user signout
+  signout: function (req, res, next) {
+    var user = req.authInfo;
+    if (!user) {
+      next(new Error('USER.UNKNOWN'));
+    } else {
+      var access_token = user.access_token;
+      if (!access_token) {
+        next(new Error('TOKEN.EMPTY'));
+      } else {
+        // destroy access token.
+        SecurityService.destroyAccessToken(access_token)
+          .then(function (count) {
+            res.json({
+              effectCount: count
+            });
+          })
+          .catch(function (err) {
+            next(err);
+          });
+      }
 
+    }
+  },
   // Require token protect
   update: function (req, res, next) {
     var newUserInfo = req.body;
-    debug("newUserInfo: ", newUserInfo);
     var user = req.authInfo;
     var userId = req.params.id;
+    debug("newUserInfo: ", newUserInfo);
 
     // do update db.
     function doUpdate() {

@@ -58,11 +58,33 @@ module.exports = {
     at.access_token = accessToken;
     try {
       // save it to redis.
-      redis.set(accessToken, tokenData);
-      // set default expire time second.
-      redis.expire(accessToken, at.expire);
+      redis.set(accessToken, tokenData)
+        .then(function () {
+          // set default expire time second.
+          return redis.expire(accessToken, at.expire);
+        }).then(function () {
+          callback(null, accessToken);
+        }).catch(function (err) {
+          callback(err);
+        });
 
-      callback(null, accessToken);
+    } catch (err) {
+      callback(err);
+    }
+  },
+  // destroy access_token
+  destroyToken: function (access_token, callback) {
+    try {
+      // set expired time ==0 second.
+      // @count The number of keys that were removed
+      redis.del(access_token, function (err, count) {
+        debug('destroyToken:', err, count);
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, count);
+        }
+      });
     } catch (err) {
       callback(err);
     }

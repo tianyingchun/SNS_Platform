@@ -19,6 +19,10 @@ var SecurityService = {
     var mixPwd = password.trim() + salt + security.saltCode;
     return cryptor.md5(mixPwd);
   },
+  /**
+   * Get password salf using cryptor.
+   * @return {String}
+   */
   getRandomSalt: function () {
     return cryptor.randomString(8);
   },
@@ -32,7 +36,7 @@ var SecurityService = {
   /**
    * Give method to encrypt user basic information to token
    * @param  {Object} user User model instance
-   * @return {String}      access_token
+   * @return {Promise<String>}      access_token
    */
   genAccessToken: function (user) {
     var deferred = q.defer();
@@ -59,6 +63,8 @@ var SecurityService = {
    * Give method to verify current status of access_token from client
    * @param  {String}   access_token the access_token
    * @param  {Function} callback     the callback
+   *
+   * @return {Promise<AccessToken>}
    */
   parseAccessToken: function (access_token) {
     var deferred = q.defer();
@@ -74,6 +80,23 @@ var SecurityService = {
     } catch (err) {
       deferred.reject(err);
     }
+    return deferred.promise;
+  },
+  /**
+   * Give method to delete access token from redis
+   * @param  {String} access_token the client access_token
+   * @return {Promise<boolean>}
+   */
+  destroyAccessToken: function (access_token) {
+    var deferred = q.defer();
+    AccessToken.destroyToken(access_token, function (err, count) {
+      if (err) {
+        deferred.reject(err);
+      } else {
+        // @count The number of keys that were removed
+        deferred.resolve(count);
+      }
+    });
     return deferred.promise;
   }
 };
