@@ -1,4 +1,5 @@
 var debug = require('debug')('app:PictureService');
+var Error = require('../constants/Error');
 
 var ProductModel = require('../models/Product.js');
 
@@ -13,7 +14,7 @@ var ProductService = {
 
   findProductById: function (id, type) {
     if (type) {
-      return ProductModel.scope(type).findAll();
+      return ProductModel.scope(type).findById(id);
     }
     return ProductModel.findById(id);
   },
@@ -24,9 +25,13 @@ var ProductService = {
     });
   },
 
-  updateProduct: function (product) {
-    return ProductModel.findById(product.id).then(function (product) {
-
+  updateProduct: function (obj) {
+    return ProductModel.unscoped().findById(obj.id).then(function (product) {
+      if (product) {
+        return product.update(obj);
+      } else {
+        throw new Error('PRODUCT.NOT_FOUND');
+      }
     });
   },
 
@@ -38,7 +43,7 @@ var ProductService = {
           field: ['deleted']
         });
       } else {
-        throw new Error('product not found.');
+        throw new Error('PRODUCT.NOT_FOUND');
       }
     });
   }

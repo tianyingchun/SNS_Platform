@@ -27,8 +27,9 @@ var ProductCtrl = {
    */
   show: function (req, res, next) {
     var id = req.params.id;
+    var type = req.query.type;
     debug('product id: %s', id);
-    ProductService.findProductById(id).then(function (product) {
+    ProductService.findProductById(id, type).then(function (product) {
       res.send(product);
     }).catch(function (error) {
       next(error);

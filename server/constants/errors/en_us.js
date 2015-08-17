@@ -84,6 +84,9 @@ module.exports = {
     }
   },
   PRODUCT: {
-
+    'NOT_FOUND': {
+      code: 'PRODUCT_NOT_FOUND',
+      message: 'product can not found!'
+    }
   }
 };
