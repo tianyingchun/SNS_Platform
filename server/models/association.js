@@ -35,6 +35,7 @@ var ProductTagMapping = db.getTableName('product_tag_mapping');
 ProductTag.belongsToMany(Product, {through: ProductTagMapping});
 Product.belongsToMany(ProductTag, {through: ProductTagMapping});
 
+Product.belongsTo(User);
 User.hasMany(Product);
 
 // Tasks  //

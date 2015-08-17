@@ -24,6 +24,7 @@ var attributes = {
 
   name: {
     type: Sequelize.STRING,
+    allowNull: false,
     validate: {
       len: [10, 200]
     }
@@ -31,6 +32,7 @@ var attributes = {
 
   shortDesc: {
     type: Sequelize.STRING,
+    allowNull: false,
     field: 'short_desc',
     validate: {
       len: [0, 200]
@@ -54,13 +56,14 @@ var attributes = {
   // 当期商品的实际价值
   price: {
     type: Sequelize.DECIMAL(10, 2),
-    allowNull: true,
+    allowNull: false,
     defaultValue: 0
   },
 
   // 申请当前产品的需要消耗的账户点(Rewards Point)，默认一般都是免费得
   needSpendPrice: {
     type: Sequelize.DECIMAL(10, 2),
+    allowNull: false,
     defaultValue: 0,
     field: 'need_spend_price'
   },
@@ -69,6 +72,7 @@ var attributes = {
   // 他就可以获得这个产品
   threshold: {
     type: Sequelize.INTEGER,
+    allowNull: false,
     defaultValue: 0
   },
 
@@ -80,12 +84,14 @@ var attributes = {
 
   availableQuantity: {
     type: Sequelize.INTEGER,
+    allowNull: false,
     field: 'available_quantity',
     defaultValue: 0
   },
 
   stockQuantity: {
     type: Sequelize.INTEGER,
+    allowNull: false,
     field: 'stock_quantity',
     defaultValue: 0
   },
@@ -93,13 +99,13 @@ var attributes = {
   availableStartTime: {
     type: Sequelize.DATE,
     field: 'availble_start_time',
-    allowNull: true
+    allowNull: false
   },
 
   availableEndTime: {
     type: Sequelize.DATE,
     field: 'available_end_time',
-    allowNull: true
+    allowNull: false
   },
 
   // 是否允许用户评论
@@ -129,11 +135,15 @@ var attributes = {
   },
 
   published: {
-    type: Sequelize.BOOLEAN
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
   },
 
   deleted: {
-    type: Sequelize.BOOLEAN
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   }
 };
 
@@ -143,7 +153,18 @@ _.extend(attributes, base);
 var Product = sequelize.define(modelName, attributes, {
   timestamps: true,
   tableName: db.getTableName(modelName),
-  underscored: true
+  underscored: true,
+  defaultScope: {
+    where: {
+      published: true,
+      deleted: false
+    }
+  },
+  scopes: {
+    all: {
+
+    }
+  }
 });
 
 module.exports = Product;
