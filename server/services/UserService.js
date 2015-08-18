@@ -110,8 +110,19 @@ var UserService = {
   },
   // Find user model instance
   // maybe we should return profile information to client.
-  findUserById: function (userId) {
-    return UserModel.findById(userId);
+  findUserById: function (userId, includeRole) {
+    var options = {};
+    if (includeRole) {
+      options.include = [{
+        model: RoleModel,
+        as: 'roles',
+        attributes: ['id', 'name', 'active', 'isSystemRole', 'systemName'],
+        through: {
+          attributes: []
+        }
+      }]
+    }
+    return UserModel.findById(userId, options);
   },
   findUserByName: function (username) {
     return this.findUserBy({
@@ -167,11 +178,6 @@ var UserService = {
         as: 'roles',
         attributes: ['id', 'name', 'active', 'isSystemRole', 'systemName'],
         through: {
-          // ignore spm_user_role mapping records
-          // "spm_user_role": {
-          //   "user_id": "7e22bbe0-40d7-11e5-b331-5dd00d60cbb3",
-          //   "role_id": "7e2071f0-40d7-11e5-b331-5dd00d60cbb3"
-          // }
           attributes: []
         }
       }],

@@ -86,7 +86,19 @@ module.exports = {
   PRODUCT: {
     'NOT_FOUND': {
       code: 'PRODUCT_NOT_FOUND',
-      message: 'product can not found!'
-    }
+      message: 'Product can not found!'
+    },
+    'NO_PERMISSION': {
+      code: 'NO_PERMISSION',
+      message: 'You cannot work on this product!'
+    },
+    'CAN_NOT_UPDATE_PUBLISHED_PRODUCT': {
+      code: 'CAN_NOT_UPDATE_PUBLISHED_PRODUCT',
+      message: 'You cannot udpate this product since it has been published!'
+    },
+    'CAN_NOT_DELETE_PUBLISHED_PRODUCT': {
+      code: 'CAN_NOT_DELETE_PUBLISHED_PRODUCT',
+      message: 'You cannot delete this product since it has been published!'
+    },
   }
 };

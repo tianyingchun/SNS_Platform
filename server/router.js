@@ -9,11 +9,11 @@ router.get('/products', ProductCtrl.index);
 /** get a product by id */
 router.get('/products/:id', ProductCtrl.show);
 /** create a product*/
-router.post('/products', ProductCtrl.create);
+router.post('/products', auth.authToken(), auth.security([RoleName.Administrators, RoleName.Publisher]), ProductCtrl.create);
 /** udpate a product by id */
-router.put('/products/:id', ProductCtrl.update);
+router.put('/products/:id', auth.authToken(), auth.security([RoleName.Administrators, RoleName.Publisher]), ProductCtrl.update);
 /** delete a product by id */
-router.delete('/products/:id', ProductCtrl.delete);
+router.delete('/products/:id', auth.authToken(), auth.security([RoleName.Administrators, RoleName.Publisher]), ProductCtrl.delete);
 
 /** get all users */
 router.get('/users', auth.authToken(), auth.security([RoleName.Administrators]), UserCtrl.index);

@@ -30,7 +30,7 @@ function tokenParse(req, access_token, done) {
         throw new AuthError('TOKEN.EXPIRED');
       }
       // return user if found.
-      return userService.findUserById(token.userId);
+      return userService.findUserById(token.userId, true);
     })
     .then(function (user) {
       if (!user) {
@@ -38,10 +38,8 @@ function tokenParse(req, access_token, done) {
       } else {
         // assign access_token to parsed user.
         user.access_token = access_token;
-
-        return done(null, user, {
-          scope: 'all'
-        });
+        debug('transfer token to user instance', user.roles);
+        return done(null, user, {scope: 'all'});
       }
     })
     .catch(function (err) {
