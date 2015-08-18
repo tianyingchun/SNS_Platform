@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var q = require('q');
 var Sequelize = require('sequelize');
 var debug = require('debug')('app:UserModel');
 var sequelize = require('./sequelize');
@@ -99,6 +100,9 @@ var User = sequelize.define(modelName, attributes, {
      * @return {Promise} The then `parameter` is (user/null)
      */
     isCustomerInRoles: function (roles, onlyActivedRoles) {
+
+      // default ignore no-actived role.
+      onlyActivedRoles = _.isUndefined(onlyActivedRoles) ? false : onlyActivedRoles;
       // no given roles, return true skip it.
       if (_.isUndefined(roles)) {
         roles = [];
@@ -106,33 +110,42 @@ var User = sequelize.define(modelName, attributes, {
       if (!_.isArray(roles)) {
         roles = [roles];
       }
-
       var user = this;
+
       debug('instance methods: `user.isCustomerInRoles:`', roles);
 
-      // if we need to check role whitch is actived.
-      var _where = onlyActivedRoles ? {
-        active: true
-      } : null;
-
-      return user.getRoles({
-        where: _where
-      }).then(function (_roles) {
+      function isRoleMatched(userRoles) {
         var matched = false;
-        _.forEach(_roles, function (item) {
-
+        _.forEach(userRoles, function (item) {
           // role system name it's number type, mapping to 'constants/enum/SystemRoleName'
           var roleSysName = item.get('systemName');
+          var actived = item.get("active");
+
+          // must be actived role.
+          var isValidItem = onlyActivedRoles === true ? (actived === true) : true;
 
           debug('roleSysName:', roleSysName, roles);
-          if (_.include(roles, roleSysName)) {
+          if (isValidItem && _.include(roles, roleSysName)) {
             matched = true;
             debug('found matched role:', SystemRoleName[roleSysName]);
             return false;
           }
         });
-        return (matched ? user : null);
-      });
+        return matched ? user : null;
+      }
+      var _cachedRoles = user.roles || [];
+      // if we have already cache roles of current user, avoid re fetch from database.
+      if (_cachedRoles.length) {
+        debug('checking user role in cached roles: ', _cachedRoles);
+        var deferred = q.defer();
+        deferred.resolve(isRoleMatched(_cachedRoles));
+        return deferred.promise;
+      } else {
+        debug('checking user role via db ...');
+        return user.getRoles().then(function (_roles) {
+          return isRoleMatched(_roles);
+        });
+      }
     },
     /**
      * Check current user if belong to sepcificed roles.

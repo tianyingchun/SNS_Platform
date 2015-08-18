@@ -121,7 +121,7 @@ module.exports = {
       if (!user) {
         next(new AuthError('USER.UNKNOWN'));
       } else {
-        user.isCustomerInRoles(roles).then(function (user) {
+        user.isCustomerInRoles(roles, true).then(function (user) {
           if (user) {
             next();
           } else {
