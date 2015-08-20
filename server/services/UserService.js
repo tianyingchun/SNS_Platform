@@ -58,7 +58,7 @@ var UserService = {
   },
   // Login with username, password
   signin: function (username, password) {
-    return UserModel.findOne({
+    return UserModel.scope(['defaultScope', 'activeUsers']).findOne({
         where: {
           $or: [{
             username: username
@@ -68,7 +68,7 @@ var UserService = {
         }
       })
       .then(function (user) {
-        debug('find user by name/email and password: ', user);
+        debug('found userid: %s by name/email and password: ', user.id);
         if (!user) {
           throw new Error('USER.SIGNIN_FAILED');
         } else {
@@ -83,46 +83,33 @@ var UserService = {
         }
       });
   },
+  //@private
+  _mixinScopes: function (scope) {
+    var _scope = ['defaultScope'];
+    if (_.isArray(scope)) {
+      _scope = _scope.concat(scope);
+    } else if (_.isString(scope)) {
+      _scope.push(scope);
+    }
+    debug('_mixinScopes: ', _scope);
+    return _scope;
+  },
   /**
    * Find user by some conditions
-   * @param  {Object}  required: conditions the conditions
-   * @param  {Boolean} includeRole: default true.
-   * @param  {Boolean} showAll: default is false.
+   * @param  {Object}  required: query conditions
+   * @param  {String|Array} scope: specific the scopes for query
    * @return {promise}
    */
-  findUserBy: function (conditions, includeRole, showAll) {
-
-    includeRole = _.isUndefined(includeRole) ? true : !!includeRole;
-    showAll = _.isUndefined(showAll) ? false : !!showAll;
-    if (showAll === false) {
-      _.extend(conditions, {
-        active: true,
-        deleted: false
-      });
-    }
-    return UserModel.findOne({
-      where: conditions,
-      include: includeRole ? [{
-        model: RoleModel,
-        as: 'roles'
-      }] : null
+  findUserBy: function (query, scope) {
+    scope = this._mixinScopes(scope);
+    return UserModel.scope(scope).findOne({
+      where: query
     });
   },
   // Find user model instance
   // maybe we should return profile information to client.
-  findUserById: function (userId, includeRole) {
-    var options = {};
-    if (includeRole) {
-      options.include = [{
-        model: RoleModel,
-        as: 'roles',
-        attributes: ['id', 'name', 'active', 'isSystemRole', 'systemName'],
-        through: {
-          attributes: []
-        }
-      }]
-    }
-    return UserModel.findById(userId, options);
+  findUserById: function (userId) {
+    return UserModel.findById(userId);
   },
   findUserByName: function (username) {
     return this.findUserBy({
@@ -153,38 +140,48 @@ var UserService = {
    * Find all users with corresponding role data allow us pagination.
    * @param  {Number} page start number 1
    * @param  {Number} size
-   * @param  {Object} conditions search filter conditions
+   * @param  {String|Array<String>} UserModel scope
+   * @param  {Object} query search filter conditions
    * @param  {Boolean} showAll    true show all rows otherwise show actived and deleted==false
    * @return {Promise}
    */
-  findAllUsers: function (page, size, conditions, showAll) {
-    var _where = {};
-    if (_.isObject(conditions)) {
-      _where = conditions;
-    }
-    if (!showAll) {
-      _.extend(_where, {
-        active: true,
-        deleted: false
-      });
-    }
+  findAllUsers: function (page, size, scope, query) {
+
     if (page == 0) page = 1;
     // now simple use limit, offset, maybe need to use store procedure to improve performance
     var offset = size * (page - 1);
+    scope = this._mixinScopes(scope);
 
-    return UserModel.findAndCountAll({
-      include: [{
-        model: RoleModel,
-        as: 'roles',
-        attributes: ['id', 'name', 'active', 'isSystemRole', 'systemName'],
-        through: {
-          attributes: []
-        }
-      }],
-      where: _where,
-      offset: offset,
-      limit: size
+    // TODO Note. findAndCountAll has an bug ? while using scope().
+    // So we must first get count(). then findAll().
+    return UserModel.scope(null).count().then(function (count) {
+      if (count === 0) {
+        return {
+          count: count || 0,
+          rows: []
+        };
+      }
+      return UserModel.scope(scope).findAll({
+        where: query,
+        offset: offset,
+        limit: size
+      }).then(function (results) {
+        return {
+          count: count || 0,
+          rows: (results && _.isArray(results) ? results : [])
+        };
+      });
     });
+  },
+  /**
+   * Find all active users
+   * @param  {Number} page  page number
+   * @param  {Number} size  page size
+   * @param  {Object} query query conditions
+   * @return {Promise}
+   */
+  findAllActiveUsers: function (page, size, query) {
+    return this.findAllUsers(page, size, 'activeUsers', query);
   },
   // delete user information.
   destroyUser: function (userId) {
@@ -209,7 +206,7 @@ var UserService = {
    * Check if user have owned given foles.
    * @param  {Object} user   user model instance.
    * @param  {Array|Number}  roles
-   * @return {Promise}
+   * @return {Boolean}
    */
   isCustomerInRoles: function (user, roles) {
     return user.isCustomerInRoles(roles);

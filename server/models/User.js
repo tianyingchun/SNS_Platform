@@ -7,6 +7,7 @@ var base = require('./base');
 var db = require('../config').db;
 var security = require('../services/securityService');
 var SystemRoleName = require('../constants/enum/SystemRoleName');
+var RoleModel = require('./Role');
 var modelName = 'User';
 
 var attributes = {
@@ -68,6 +69,24 @@ var User = sequelize.define(modelName, attributes, {
   // The default casing is camelCase however if the source model is configured with underscored: true
   underscored: true,
 
+  defaultScope: {
+    include: [{
+      model: RoleModel,
+      as: 'roles',
+      attributes: ['id', 'name', 'active', 'isSystemRole', 'systemName'],
+      through: {
+        attributes: []
+      }
+    }]
+  },
+  scopes: {
+    activeUsers: {
+      where: {
+        active: true,
+        deleted: false
+      }
+    }
+  },
   // provider some instance method  for user model instance.
   instanceMethods: {
 
@@ -76,12 +95,12 @@ var User = sequelize.define(modelName, attributes, {
      * @param  {Boolean} allField true list all fields of user
      * @return {Object}  Json
      */
-    toJsonValue: function (allField) {
+    toShortPlainInfo: function (allField) {
       var result = this.get({
         plain: true
       });
       if (allField !== true) {
-        var fields = ['id', 'username', 'email', 'active', 'deleted', 'isSystemAccount'];
+        var fields = ['id', 'username', 'email', 'roles', 'active', 'deleted', 'isSystemAccount'];
         result = _.reduce(result, function (result, value, key) {
           if (_.includes(fields, key)) {
             result[key] = value;
@@ -97,7 +116,7 @@ var User = sequelize.define(modelName, attributes, {
      *                   Note. we can use [SystemRoleName.Administrator] ==>0
      *                   can't use SystemRoleName[0] to match roles.
      * @param  {Boolean} onlyActivedRoles: true indicates we only query actived roles.
-     * @return {Promise} The then `parameter` is (user/null)
+     * @return {Boolean}
      */
     isCustomerInRoles: function (roles, onlyActivedRoles) {
 
@@ -111,47 +130,35 @@ var User = sequelize.define(modelName, attributes, {
         roles = [roles];
       }
       var user = this;
+      var userRoles = user.roles || [];
 
-      debug('instance methods: `user.isCustomerInRoles:`', roles);
+      debug('`UserModel.isCustomerInRoles,` target roles: %o', roles);
 
-      function isRoleMatched(userRoles) {
-        var matched = false;
-        _.forEach(userRoles, function (item) {
-          // role system name it's number type, mapping to 'constants/enum/SystemRoleName'
-          var roleSysName = item.get('systemName');
-          var actived = item.get("active");
+      var matched = false;
 
-          // must be actived role.
-          var isValidItem = onlyActivedRoles === true ? (actived === true) : true;
+      _.forEach(userRoles, function (item) {
+        // role system name it's number type, mapping to 'constants/enum/SystemRoleName'
+        var roleSysName = item.get('systemName');
+        var actived = item.get("active");
 
-          debug('roleSysName:', roleSysName, roles);
-          if (isValidItem && _.include(roles, roleSysName)) {
-            matched = true;
-            debug('found matched role:', SystemRoleName[roleSysName]);
-            return false;
-          }
-        });
-        return matched ? user : null;
-      }
-      var _cachedRoles = user.roles || [];
-      // if we have already cache roles of current user, avoid re fetch from database.
-      if (_cachedRoles.length) {
-        debug('checking user role in cached roles: ', _cachedRoles);
-        var deferred = q.defer();
-        deferred.resolve(isRoleMatched(_cachedRoles));
-        return deferred.promise;
-      } else {
-        debug('checking user role via db ...');
-        return user.getRoles().then(function (_roles) {
-          return isRoleMatched(_roles);
-        });
-      }
+        // must be actived role.
+        var isValidItem = onlyActivedRoles === true ? (actived === true) : true;
+
+        debug('roleSysName:', roleSysName, roles);
+        if (isValidItem && _.include(roles, roleSysName)) {
+          matched = true;
+          debug('found matched role:', SystemRoleName[roleSysName]);
+          return false;
+        }
+      });
+
+      return matched;
     },
     /**
      * Check current user if belong to sepcificed roles.
      * @param  {Number}   roleSystemName   roleName SystemRoleName['administrators'] ==>0
      * @param  {Boolean}  onlyActivedRoles
-     * @return {Promise}  parameter is (user/null)
+     * @return {Boolean}
      */
     isInCustomerRole: function (roleSystemName, onlyActivedRoles) {
       onlyActivedRoles = _.isUndefined(onlyActivedRoles) ? true : !!onlyActivedRoles;

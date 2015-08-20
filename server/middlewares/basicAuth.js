@@ -30,7 +30,7 @@ function tokenParse(req, access_token, done) {
         throw new AuthError('TOKEN.EXPIRED');
       }
       // return user if found.
-      return userService.findUserById(token.userId, true);
+      return userService.findUserById(token.userId);
     })
     .then(function (user) {
       if (!user) {
@@ -39,7 +39,9 @@ function tokenParse(req, access_token, done) {
         // assign access_token to parsed user.
         user.access_token = access_token;
         debug('transfer token to user instance', user.roles);
-        return done(null, user, {scope: 'all'});
+        return done(null, user, {
+          scope: 'all'
+        });
       }
     })
     .catch(function (err) {
@@ -106,28 +108,23 @@ module.exports = {
   security: function (roles) {
 
     debug('initial basicAuth.security authentication....', roles);
-
     if (_.isUndefined(roles)) {
       roles = [];
     }
     if (!_.isArray(roles)) {
       roles = [roles];
     }
-
     return function (req, res, next) {
       debug('required roles:', roles);
-
       var user = req.authInfo;
       if (!user) {
         next(new AuthError('USER.UNKNOWN'));
       } else {
-        user.isCustomerInRoles(roles, true).then(function (user) {
-          if (user) {
-            next();
-          } else {
-            next(new AuthError('ROLE.NOT_MATCHED_ROLES'));
-          }
-        });
+        if (user.isCustomerInRoles(roles, true)) {
+          next();
+        } else {
+          next(new AuthError('ROLE.NOT_MATCHED_ROLES'));
+        }
       }
     };
   }

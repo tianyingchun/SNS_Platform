@@ -43,31 +43,18 @@ var UserCtrl = {
     debug('authInfo: ', user);
     var err = ErrorEnum.ACCESS_DENY;
 
-    function showUserInfo() {
+    // current user. only current user only show it's own user information.
+    if (user && (userId === user.get('id') || user.isAdmin())) {
+      debug('current user matched!');
       UserService.findUserById(userId).then(function (user) {
         if (user) {
-          res.send(user.toJsonValue());
+          res.send(user.toShortPlainInfo());
         } else {
           next(new Error('USER.UNKNOWN'));
         }
       }).catch(function (err) {
         next(err);
       });
-    }
-    if (user) {
-      // current user. only current user only show it's own user information.
-      if (userId === user.get('id')) {
-        debug('current user matched!');
-        showUserInfo();
-      } else {
-        user.isAdmin().then(function (user) {
-          if (!user) {
-            next(err);
-          } else {
-            showUserInfo();
-          }
-        });
-      }
     } else {
       next(err);
     }
@@ -87,7 +74,7 @@ var UserCtrl = {
     // return new user info to client if success.
     UserService.signup(userInfo).then(function (newUser) {
       if (newUser) {
-        var resUserInfo = newUser.toJsonValue();
+        var resUserInfo = newUser.toShortPlainInfo();
         res.send(resUserInfo);
       } else {
         next(new Error('USER.SIGN_UP_FAILED'));
@@ -144,7 +131,6 @@ var UserCtrl = {
             next(err);
           });
       }
-
     }
   },
   // Require token protect
@@ -153,13 +139,12 @@ var UserCtrl = {
     var user = req.authInfo;
     var userId = req.params.id;
     debug("newUserInfo: ", newUserInfo);
-
-    // do update db.
-    function doUpdate() {
+    // only can update own userinfo except you are administrator role.
+    if (user && (userId === user.get('id') || user.isAdmin())) {
       UserService.updateUser(userId, newUserInfo, ['email'])
         .then(function (updatedUser) {
           if (updatedUser) {
-            res.send(updatedUser.toJsonValue());
+            res.send(updatedUser.toShortPlainInfo());
           } else {
             next(new Error('USER.UPDATE_USER_FAILED'));
           }
@@ -167,24 +152,6 @@ var UserCtrl = {
         .catch(function (err) {
           next(err);
         });
-    }
-    if (user) {
-      // only can update own userinfo except you are administrator role.
-      if (userId === user.get('id')) {
-        doUpdate(user);
-      } else {
-        user.isAdmin().then(function (user) {
-          if (!user) {
-            next(ErrorEnum.ACCESS_DENY);
-          } else {
-            debug('current user have admin role...');
-            doUpdate(user);
-          }
-        }).catch(function (err) {
-          next(err);
-        });
-      }
-
     } else {
       next(ErrorEnum.ACCESS_DENY);
     }
@@ -201,7 +168,7 @@ var UserCtrl = {
         .then(function (user) {
           debug('destoryed user..', user);
           if (user.get('deleted')) {
-            res.send('success');
+            res.send(user.toShortPlainInfo());
           } else {
             next(new Error('USER.DESTROY_FAILED'));
           }
