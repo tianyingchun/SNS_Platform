@@ -86,19 +86,31 @@ module.exports = {
   PRODUCT: {
     'NOT_FOUND': {
       code: 'PRODUCT_NOT_FOUND',
-      message: 'Product can not found!'
+      message: 'Product can not found.'
     },
     'NO_PERMISSION': {
       code: 'NO_PERMISSION',
-      message: 'You cannot work on this product!'
+      message: 'You cannot work on this product.'
     },
     'CAN_NOT_UPDATE_PUBLISHED_PRODUCT': {
       code: 'CAN_NOT_UPDATE_PUBLISHED_PRODUCT',
-      message: 'You cannot udpate this product since it has been published!'
+      message: 'You cannot udpate this product since it has been published.'
     },
     'CAN_NOT_DELETE_PUBLISHED_PRODUCT': {
       code: 'CAN_NOT_DELETE_PUBLISHED_PRODUCT',
-      message: 'You cannot delete this product since it has been published!'
+      message: 'You cannot delete this product since it has been published.'
     },
+  },
+  CACHE: {
+    'REDIS_QUERY_FAILED': {
+      code: 'REDIS_QUERY_FAILED',
+      message: 'get cached data from redis failed.'
+    }
+  },
+  URLRECORD: {
+    CAN_NOT_BE_FOUND: {
+      code: 'CAN_NOT_BE_FOUND',
+      message: 'The url record can\'t be found in database.'
+    }
   }
 };

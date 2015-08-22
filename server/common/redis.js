@@ -19,4 +19,10 @@ redis.on('err', function (err) {
   debug('redis cache exceptions!', err);
 });
 
+_.extend(redis, {
+  // via `new()` manually create redis instance with customized parameters. eg. {keyPrefix:xxx}
+  new: function (options) {
+    return new Redis(_.extend(config.redis, options || {}));
+  }
+});
 module.exports = redis;

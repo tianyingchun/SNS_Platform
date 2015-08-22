@@ -30,7 +30,12 @@ _.extend(attributes, base);
 
 var UrlRecord = sequelize.define(modelName, attributes, {
   tableName: db.getTableName(modelName),
-  underscored: true
+  underscored: true,
+  defaultScope: {
+    where: {
+      active: true
+    }
+  }
 });
 
 
