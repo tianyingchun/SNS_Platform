@@ -31,4 +31,5 @@ router.post('/user/signin', UserCtrl.signin);
 // user sign out.
 router.post('/user/signout', auth.authToken(), auth.security([RoleName.Registered]), UserCtrl.signout);
 
+
 module.exports = router;

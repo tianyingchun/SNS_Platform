@@ -17,7 +17,9 @@ var security = {
   // The secret for DES decrypt
   desSecret: 'SNS_PLATFORM',
   // The token expired time second
-  tokenLife: 24 * 60 * 60 * 7
+  tokenLife: 24 * 60 * 60 * 7,
+  // The cacheService default item cache expire time (second)
+  cacheTime: 24 * 60 * 60 * 7
 };
 // mysql database.
 var db = {
@@ -59,7 +61,7 @@ var mail_opts = {
   }
 };
 // locales config, default is 'en_us' must be placed index=0
-var locales = ['en_us','zh_cn'];
+var locales = ['en_us', 'zh_cn'];
 
 var url = {
   appBaseUrl: 'http://localhost:3000{0}',
