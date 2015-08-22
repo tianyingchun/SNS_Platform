@@ -12,7 +12,7 @@ var attributes = {
   },
 
   displayOrder: {
-    type: Sequelize: INTEGER,
+    type: Sequelize.INTEGER,
     field: 'display_order'
   }
 };

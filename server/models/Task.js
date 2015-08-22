@@ -8,7 +8,8 @@ var modelName = 'Task';
 
 var attributes = {
   name: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    allowNull: false
   },
 
   description: {
@@ -16,27 +17,30 @@ var attributes = {
     validate: {
       len: [0, 1000],
     },
-    allowNull: true
   },
 
   reward: {
     type: Sequelize.DECIMAL(10, 2),
-    defaultValue: 0
+    defaultValue: 0,
+    allowNull: false
   },
 
   // 当前任务的权重点，和Product表threshold字段关联
   // 多个任务之和>=product.threshold 就可以获得Product级别的东西或者price.
   point: {
     type: Sequelize.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    allowNull: false
   },
 
   active: {
-    type: Sequelize.BOOLEAN
+    type: Sequelize.BOOLEAN,
+    defaultValue: true
   },
 
   deleted: {
-    type: Sequelize.BOOLEAN
+    type: Sequelize.BOOLEAN,
+    defaultValue: false
   }
 };
 
@@ -46,7 +50,12 @@ _.extend(attributes, base);
 var Task = sequelize.define(modelName, attributes, {
   timestamps: true,
   tableName: db.getTableName(modelName),
-  underscored: true
+  underscored: true,
+  defaultScope: {
+    where: {
+      deleted: false
+    }
+  }
 });
 
 module.exports = Task;

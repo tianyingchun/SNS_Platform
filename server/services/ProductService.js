@@ -2,6 +2,7 @@ var debug = require('debug')('app:ProductService');
 var Error = require('../constants/Error');
 
 var ProductModel = require('../models/Product.js');
+var TaskModel = require('../models/Task.js');
 
 var ProductService = {
 
@@ -33,7 +34,12 @@ var ProductService = {
     if (type) {
       return ProductModel.scope(type).findById(id);
     }
-    return ProductModel.findById(id);
+    return ProductModel.findById(id).then(function (product) {
+      if (product) {
+        return product;
+      }
+      throw new Error('PRODUCT.NOT_FOUND');
+    });
   },
 
   createProduct: function (product, user) {
@@ -83,7 +89,22 @@ var ProductService = {
         throw new Error('PRODUCT.NOT_FOUND');
       }
     });
+  },
+
+  findAllTasksByProductId: function (id) {
+    return ProductModel.findById(id).then(function (product) {
+      if (product) {
+        return product.getTasks();
+      }
+      throw new Error('PRODUCT.NOT_FOUND');
+    })
+  },
+
+  findOneTaskUnderProduct: function (arguments) {
+
   }
+
+
 };
 
 module.exports = ProductService;

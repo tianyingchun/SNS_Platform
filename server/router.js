@@ -15,6 +15,21 @@ router.put('/products/:id', auth.authToken(), auth.security([RoleName.Administra
 /** delete a product by id */
 router.delete('/products/:id', auth.authToken(), auth.security([RoleName.Administrators, RoleName.Publisher]), ProductCtrl.delete);
 
+/** get all task under product */
+router.get('/products/:id/tasks', ProductCtrl.getTasks);
+/** get specific task under product */
+router.get('/products/:id/tasks/:tid', ProductCtrl.getTaskById);
+/** create tasks under product */
+router.post('/products/:id/tasks', ProductCtrl.createTasks);
+/** udpate multi tasks under product */
+router.put('/products/:id/tasks', ProductCtrl.updateTasks);
+/** update specific task under product */
+router.put('/products/:id/tasks/:tid', ProductCtrl.updateTaskById);
+/** delete specific task under product */
+router.delete('/products/:id/tasks/:tid', ProductCtrl.deleteTaskById);
+/** delete multi tasks under product */
+router.delete('/products/:id/tasks', ProductCtrl.deleteMultiTasks);
+
 /** get all users */
 router.get('/users', auth.authToken(), auth.security([RoleName.Administrators]), UserCtrl.index);
 /** get a user by id */

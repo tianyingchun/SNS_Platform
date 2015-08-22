@@ -80,6 +80,70 @@ var ProductCtrl = {
     }).catch(function (error) {
       next(error);
     });
+  },
+
+  getTasks: function (req, res, next) {
+    var id = req.params.id;
+    ProductService.findAllTasksByProductId(id).then(function (tasks) {
+      res.send(tasks);
+    }).catch(function (error) {
+      next(error);
+    });
+  },
+
+  getTaskById: function (req, res, next) {
+    var id = req.params.id;
+    var tid = req.params.tid;
+    ProductService.findOneTaskUnderProduct(id, tid).then(function (tasks) {
+
+    }).catch(function (error) {
+      next(error);
+    });
+  },
+
+  createTasks: function (req, res, next) {
+    var id = req.params.id;
+    ProductService.createTasksUnderProduct(obj).then(function (tasks) {
+
+    }).catch(function (error) {
+      next(error);
+    });
+  },
+
+  updateTaskById: function (req, res, next) {
+    var id = req.params.id;
+    ProductService.findTasksByProductId(id).then(function (tasks) {
+
+    }).catch(function (error) {
+      next(error);
+    });
+  },
+
+  updateTasks: function (req, res, next) {
+    var id = req.params.id;
+    ProductService.findTasksByProductId(id).then(function (tasks) {
+
+    }).catch(function (error) {
+      next(error);
+    });
+  },
+
+  deleteTaskById: function (req, res, next) {
+    var id = req.params.id;
+    ProductService.findTasksByProductId(id).then(function (tasks) {
+
+    }).catch(function (error) {
+      next(error);
+    });
+  },
+
+  deleteMultiTasks: function (req, res, next) {
+    var id = req.params.id;
+    ProductService.findTasksByProductId(id).then(function (tasks) {
+
+    }).catch(function (error) {
+      next(error);
+    });
   }
 };
 
