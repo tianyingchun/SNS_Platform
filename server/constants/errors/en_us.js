@@ -7,6 +7,10 @@ module.exports = {
     'ACCESS_DENY': {
       code: 'ACCESS_DENY',
       message: 'access deny, you are no permission to access.'
+    },
+    'DE_SERIALIZE_FAILED': {
+      code: 'DE_SERIALIZE_FAILED',
+      message: 'deSerialize failed .'
     }
   },
   TOKEN: {
@@ -105,6 +109,10 @@ module.exports = {
     'REDIS_QUERY_FAILED': {
       code: 'REDIS_QUERY_FAILED',
       message: 'get cached data from redis failed.'
+    },
+    'CACHE_KEY_IS_INVALID': {
+      code: 'CACHE_KEY_IS_INVALID',
+      message: 'The cache key is invalid.'
     }
   },
   URLRECORD: {

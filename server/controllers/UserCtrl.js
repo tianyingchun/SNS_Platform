@@ -1,7 +1,7 @@
 var Error = require('../constants/Error');
 var ErrorEnum = Error.ErrorEnum;
 var UserService = require('../services/UserService');
-var SecurityService = require('../services/SecurityService');
+var AccessTokenService = require('../services/AccessTokenService');
 var lang = require('../common/lang');
 var debug = require('debug')('app:UserCtrl');
 var redis = require('../common/redis');
@@ -96,7 +96,7 @@ var UserCtrl = {
           next(new Error('USER.SIGNIN_FAILED'));
         } else {
           // send access_token to client.
-          SecurityService.genAccessToken(user)
+          AccessTokenService.genToken(user)
             .then(function (access_token) {
               res.send({
                 access_token: access_token
@@ -121,11 +121,9 @@ var UserCtrl = {
         next(new Error('TOKEN.EMPTY'));
       } else {
         // destroy access token.
-        SecurityService.destroyAccessToken(access_token)
-          .then(function (count) {
-            res.json({
-              effectCount: count
-            });
+        AccessTokenService.destroyToken(access_token)
+          .then(function (result) {
+            res.json(result);
           })
           .catch(function (err) {
             next(err);

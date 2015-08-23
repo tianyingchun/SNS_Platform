@@ -183,6 +183,22 @@ module.exports = {
   toSnakeCase: function (str) {
     return this.toNoSpace(str).replace(/\s/g, '_');
   },
+
+  serialize: function (data) {
+    // simply use JSON.stringify.
+    return JSON.stringify(data);
+  },
+  // serialize data.
+  deSerialize: function (data) {
+    try {
+      return JSON.parse(data);
+    } catch (e) {
+      var Error = createError('LangError', {
+        status: 400
+      });
+      throw new Error('COMMON.DE_SERIALIZE_FAILED');
+    }
+  },
   /**
    * 用法：
    *   第一个参数传一个Date对象（没有则使用当前时间）

@@ -1,24 +1,30 @@
 var _ = require('lodash');
 var q = require('q');
 var redis = require('../common/redis');
+var lang = require('../common/lang');
 var debug = require('debug')('app:CacheService');
 var security = require('../config').security;
+var Error = require('../constants/Error');
 
-function serialize(data) {
-  return JSON.stringify(data);
-}
+var serialize = lang.serialize;
 
-function deSerialize(data) {
-  return JSON.parse(data);
-}
+var deSerialize = lang.deSerialize;
 
+function normalizeCacheKey(key) {
+  if (key && _.isString(key)) {
+    return key.toLowerCase();
+  } else {
+    throw new Error('CACHE.CACHE_KEY_IS_INVALID');
+  }
+};
 /**
  * The redis cache repository.
  * @param {Object} options the cache configurations
  */
 function RedisCache(options) {
   options = options || {};
-  this.prefix = _.isUndefined(options.prefix) ? 'cache:' : options.prefix;
+
+  this.prefix = normalizeCacheKey(options.prefix ? options.prefix : 'cache:');
   // default cache provider is redis.
   this._redis = redis.new({
     keyPrefix: this.prefix
@@ -28,10 +34,11 @@ function RedisCache(options) {
 _.extend(RedisCache.prototype, {
   /**
    * Gets or sets the value associated with the specified key.
-   * @param  {Strubg}   key      The key of the value to get.
+   * @param  {String}   key      The key of the value to get.
    * @return {Promise<data>}     The value associated with the specified key
    */
   get: function (key) {
+    key = normalizeCacheKey(key);
     return this._redis.get(key)
       .then(function (data) {
         if (!data) {
@@ -52,6 +59,7 @@ _.extend(RedisCache.prototype, {
    * @return {Promise<Boolean>} Result: true has been added success.
    */
   set: function (key, data, cacheTime) {
+    key = normalizeCacheKey(key);
     cacheTime = cacheTime || security.cacheTime;
     var self = this;
     return self._redis.set(key, serialize(data))
@@ -69,6 +77,7 @@ _.extend(RedisCache.prototype, {
    * @return {Promise<Boolean>} Result: true has been existed.
    */
   isSet: function (key) {
+    key = normalizeCacheKey(key);
     return this._redis.exists(key).then(function (matchedRows) {
       debug('redis.exists().matchedRows:', matchedRows);
       return matchedRows > 0;
@@ -81,6 +90,7 @@ _.extend(RedisCache.prototype, {
    * @return {Promise<Boolean>} Result: true has been removed.
    */
   remove: function (key) {
+    key = normalizeCacheKey(key);
     return this._redis.del(key).then(function (affectedRow) {
       debug('redis.remove().key:%s, affectedRow:%s', key, affectedRow);
       return affectedRow > 0;
@@ -118,12 +128,11 @@ _.extend(RedisCache.prototype, {
   }
 });
 
-var cacheProvider = new RedisCache({
-  prefix: ''
-});
+var cacheProvider = new RedisCache({ prefix: '' });
 
 _.extend(cacheProvider, {
   // we can indicates options to set cache key prefix. (we can see cache key clearly)
+  // { prefix: 'access_token:' }
   new: function (options) {
     return new RedisCache(options);
   }

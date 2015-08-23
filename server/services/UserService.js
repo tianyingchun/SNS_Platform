@@ -198,7 +198,7 @@ var UserService = {
             });
           }
         } else {
-          throw new Error('ROLE.CAN_NOT_BE_FOUND');
+          throw new Error('USER.CAN_NOT_BE_FOUND');
         }
       });
   },

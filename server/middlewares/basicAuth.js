@@ -3,7 +3,7 @@ var passport = require('passport');
 var BearerStrategy = require('passport-http-bearer');
 var debug = require('debug')('app:basicAuth');
 var lang = require('../common/lang');
-var securityService = require('../services/SecurityService');
+var AccessTokenService = require('../services/AccessTokenService');
 var userService = require('../services/UserService');
 
 var AuthError = lang.createError('AuthError', {
@@ -17,8 +17,8 @@ function tokenParse(req, access_token, done) {
   // The definitions for authentication middleware.
   var AUTH_ERROR_MESSAGE = require('../constants/Error').Message(locale);
 
-  securityService
-    .parseAccessToken(access_token)
+  AccessTokenService
+    .parseToken(access_token)
     .then(function (token) {
       debug('parsed token: ', token);
       if (!token) {
