@@ -28,14 +28,14 @@ var instanceMethods = {
       }
     });
 
-    var name2 = sb.join();
-    name2 = name2.replace(" ", "-");
+    var name2 = sb.join('');
+    name2 = name2.replace(/\s+/ig, '-');
 
     while (_.contains(name2, '--')) {
-      name2 = name2.replace("--", "-");
+      name2 = name2.replace('--', '-');
     }
     while (_.contains(name2, '__')) {
-      name2 = name2.Replace("__", "_");
+      name2 = name2.Replace('__', '_');
     }
     return name2;
   }
