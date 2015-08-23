@@ -35,19 +35,34 @@ _.extend(RedisCache.prototype, {
   /**
    * Gets or sets the value associated with the specified key.
    * @param  {String}   key      The key of the value to get.
+   * @param  {options}  options
+   *         {options.promiseFn} The real data function callback, must be return as promise<plain data>.}
+   *         {options.cacheTime} cacheTime (the second).
    * @return {Promise<data>}     The value associated with the specified key
    */
-  get: function (key) {
+  get: function (key, options) {
     key = normalizeCacheKey(key);
-    return this._redis.get(key)
+    options = options || {};
+    var self = this;
+    var promiseFn = options.promiseFn;
+    var cacheTime = options.cacheTime;
+    return self._redis.get(key)
       .then(function (data) {
-        if (!data) {
-          debug('redis.get() ->data: ', data);
-          // query redis exception or redis token expired.
-          throw new Error('CACHE.REDIS_QUERY_FAILED');
-        } else {
+        if (data) {
           //return `cached` data.
           return deSerialize(data);
+        } else if (_.isDefined(promiseFn)) {
+          // save new data to cache provider.
+          return promiseFn().then(function (result) {
+            debug('redis.get().set()', result);
+            // try to cache this result, but don't care if success!
+            if (result) {
+              self.set(key, result, cacheTime);
+            }
+            return result;
+          });
+        } else {
+          return null;
         }
       });
   },
@@ -128,7 +143,10 @@ _.extend(RedisCache.prototype, {
   }
 });
 
-var cacheProvider = new RedisCache({ prefix: '' });
+var cacheProvider =
+  new RedisCache({
+    prefix: ''
+  });
 
 _.extend(cacheProvider, {
   // we can indicates options to set cache key prefix. (we can see cache key clearly)

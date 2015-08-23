@@ -15,6 +15,30 @@ var modelDefine = {
 // Model.build().method1();
 var instanceMethods = {
 
+  // provider instance method for get seo url for title.
+  getSeoName: function (name) {
+    if (!name) return name;
+    var okChars = "abcdefghijklmnopqrstuvwxyz1234567890 _-";
+    name = name.trim().toLowerCase();
+    var sb = [];
+
+    _.forEach(name, function (c) {
+      if (_.contains(okChars, c)) {
+        sb.push(c);
+      }
+    });
+
+    var name2 = sb.join();
+    name2 = name2.replace(" ", "-");
+
+    while (_.contains(name2, '--')) {
+      name2 = name2.replace("--", "-");
+    }
+    while (_.contains(name2, '__')) {
+      name2 = name2.Replace("__", "_");
+    }
+    return name2;
+  }
 };
 
 // the class method can be usefull for models defined by sequelize.define();

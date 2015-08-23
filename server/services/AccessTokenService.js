@@ -80,7 +80,12 @@ module.exports = {
     return _cacheManager.get(access_token)
       .then(function (tokenData) {
         debug('parseToken()->tokenData: ', tokenData);
-        return _.extend(at, tokenData);
+        if (!tokenData) {
+          // query redis exception or redis token expired.
+          throw new Error('TOKEN.REDIS_QUERY_FAILED');
+        } else {
+          return _.extend(at, tokenData);
+        }
       });
   }
 };

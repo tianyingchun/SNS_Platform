@@ -27,7 +27,7 @@ var UserService = {
         }, {
           email: user.email
         }]
-      }, false)
+      })
       .then(function (found) {
         debug('the signup user has been created');
         if (!found) {
@@ -68,10 +68,10 @@ var UserService = {
         }
       })
       .then(function (user) {
-        debug('found userid: %s by name/email and password: ', user.id);
         if (!user) {
           throw new Error('USER.SIGNIN_FAILED');
         } else {
+          debug('found userid: %s by name/email and password: ', user.id);
           var salt = user.get('passwordSalt');
           var passwordInDb = user.get('password');
           var _password = SecurityService.getEncryptedPassword(password, salt);
@@ -154,7 +154,9 @@ var UserService = {
 
     // TODO Note. findAndCountAll has an bug ? while using scope().
     // So we must first get count(). then findAll().
-    return UserModel.scope(null).count().then(function (count) {
+    return UserModel.scope(null).count({
+      where: query
+    }).then(function (count) {
       if (count === 0) {
         return {
           count: count || 0,
@@ -181,7 +183,10 @@ var UserService = {
    * @return {Promise}
    */
   findAllActiveUsers: function (page, size, query) {
-    return this.findAllUsers(page, size, 'activeUsers', query);
+    return this.findAllUsers(page, size, 'activeUsers', _.extend({
+      deleted: false,
+      active: true
+    }, query));
   },
   // delete user information.
   destroyUser: function (userId) {

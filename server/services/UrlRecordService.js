@@ -8,9 +8,8 @@ var UrlRecordModel = require('../models/UrlRecord');
  * Key for caching
  * {0} : entity ID
  * {1} : entity name
- * {2} : language ID
  */
-var URLRECORD_ACTIVE_BY_ID_NAME_LANGUAGE_KEY = "app.urlrecord.active.id-name-language-{0}-{1}-{2}";
+var URLRECORD_ACTIVE_BY_ID_NAME_KEY = "app.urlrecord.active.id-name-{0}-{1}";
 
 // Key for caching
 var URLRECORD_ALL_KEY = "app.urlrecord.all";
@@ -69,7 +68,11 @@ var UrlRecordService = {
     //cache
     var key = lang.stringFormat(URLRECORD_ALL_KEY);
     return _cacheManager.get(key, function () {
-      return UrlRecordModel.findAll()
+      return UrlRecordModel.findAll({
+          where: {
+            active: true
+          }
+        })
         .then(function (urlRecords) {
           var results = [];
           _.forEach(urlRecords || [], function (record) {
@@ -86,7 +89,9 @@ var UrlRecordService = {
     scope = this._mixinScopes(scope);
     // TODO Note. findAndCountAll has an bug ? while using scope().
     // So we must first get count(). then findAll().
-    return UrlRecordModel.scope(null).count().then(function (count) {
+    return UrlRecordModel.scope(null).count({
+      where: query
+    }).then(function (count) {
       if (count === 0) {
         return {
           count: count || 0,
@@ -191,12 +196,14 @@ var UrlRecordService = {
     var key = lang.stringFormat(URLRECORD_BY_SLUG_KEY, slug);
     var self = this;
     return _cacheManager.get(key, function () {
-      var urlRecord = self.getBySlug(slug);
-      if (urlRecord == null) {
-        return null;
-      }
-      var urlRecordForCaching = map(urlRecord);
-      return urlRecordForCaching;
+      self.getBySlug(slug)
+        .then(function (urlRecord) {
+          if (urlRecord == null) {
+            return null;
+          }
+          var urlRecordForCaching = map(urlRecord);
+          return urlRecordForCaching;
+        });
     });
   },
 
@@ -207,11 +214,129 @@ var UrlRecordService = {
    * @return {Promise}
    */
   getActiveSlug: function (entityId, entityName) {
-
+    var key = lang.stringFormat(URLRECORD_ACTIVE_BY_ID_NAME_KEY, entityId, entityName);
+    var self = this;
+    return _cacheManager.get(key, function () {
+      self.getAllUrlRecordsCached()
+        .then(function (results) {
+          var findRecord = null;
+          if (results && result.length) {
+            _.forEach(results, function (record) {
+              if (record.active == true && record.entityId == entityId && record.entityName == entityName) {
+                findRecord = record;
+                return false;
+              }
+            });
+          }
+          return findRecord;
+        });
+    });
   },
+  /**
+   * Save slug while update, add products or categories,...
+   * @param  {String} entityId   the id of product,category,..
+   * @param  {String} entityName the type name of ProductModel(product), categoryModel(category).
+   *                             see supported entity definition in constatns/enum/UrlRecordEntity.
+   * @param  {String} slug       The url slug
+   * @return {Promise}
+   */
+  saveSlug: function (entityId, entityName, slug) {
+    UrlRecordModel.findAll({
+      where: {
+        entityId: entityId,
+        entityName: entityName
+      }
+    }).then(function (allRecords) {
+      var activeUrlRecord = null;
+      var allActivedRecords = [];
+      var allNoActivedRecords = [];
 
-  saveSlug: function (slug) {
+      if (allRecords && allRecords.length) {
+        _.forEach(allRecords, function (item) {
+          if (item.active == true) {
+            allActivedRecords.push(item);
+          } else {
+            allNoActivedRecords.push(item);
+          }
+        });
+        activeUrlRecord = allActivedRecords[0];
+      }
+      // step 1
+      if (activeUrlRecord == null && slug) {
+        // find no actived records with match slug
+        var nonActiveRecordWithSpecifiedSlug = null;
+        _.forEach(allNoActivedRecords, function (item) {
+          if (item.slug == slug) {
+            nonActiveRecordWithSpecifiedSlug = item;
+            return false;
+          }
+        });
+        if (nonActiveRecordWithSpecifiedSlug != null) {
+          //mark non-active record as active
+          nonActiveRecordWithSpecifiedSlug.active = true;
+          return self.updateUrlRecord(nonActiveRecordWithSpecifiedSlug);
+        } else {
+          //new record
+          var urlRecord = {
+            entityId: entityId,
+            entityName: entityName,
+            slug: slug,
+            active: true,
+          };
+          return self.insertUrlRecord(urlRecord);
+        }
+      }
+      // step2
+      if (activeUrlRecord != null && !slug) {
+        //disable the previous active URL record
+        activeUrlRecord.active = false;
+        return self.updateUrlRecord(activeUrlRecord);
+      }
 
+      // step3
+      if (activeUrlRecord != null && slug) {
+        if (activeUrlRecord.slug != slug) {
+          //it should not be the same slug as in active URL record
+          var nonActiveRecordWithSpecifiedSlug = null;
+          _.forEach(allNoActivedRecords, function (item) {
+            if (item.slug == slug) {
+              nonActiveRecordWithSpecifiedSlug = item;
+              return false;
+            }
+          });
+
+          if (nonActiveRecordWithSpecifiedSlug != null) {
+            //mark non-active record as active
+            nonActiveRecordWithSpecifiedSlug.active = true;
+
+            return self.updateUrlRecord(nonActiveRecordWithSpecifiedSlug)
+              .then(function () {
+                //disable the previous active URL record
+                activeUrlRecord.active = false;
+                return self.updateUrlRecord(activeUrlRecord);
+              });
+          } else {
+            //insert new record
+            //we do not update the existing record because we should track all previously entered slugs
+            //to ensure that URLs will work fine
+            //new record
+            var urlRecord = {
+              entityId: entityId,
+              entityName: entityName,
+              slug: slug,
+              active: true,
+            };
+            return self.insertUrlRecord(urlRecord)
+              .then(function () {
+                //disable the previous active URL record
+                activeUrlRecord.active = false;
+                retrn self.updateUrlRecord(activeUrlRecord);
+              });
+          }
+        }
+      }
+
+    });
   }
 };
 module.exports = UrlRecordService;
