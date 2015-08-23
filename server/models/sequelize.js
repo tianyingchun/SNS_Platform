@@ -28,15 +28,11 @@ var instanceMethods = {
       }
     });
 
-    var name2 = sb.join('');
-    name2 = name2.replace(/\s+/ig, '-');
+    var name2 = sb.join('')
+      .replace(/\s+/ig, '-')
+      .replace(/(-)+/ig, '-')
+      .replace(/(\_)+/ig, '_');
 
-    while (_.contains(name2, '--')) {
-      name2 = name2.replace('--', '-');
-    }
-    while (_.contains(name2, '__')) {
-      name2 = name2.Replace('__', '_');
-    }
     return name2;
   }
 };

@@ -50,16 +50,7 @@ function map(record) {
 
 var UrlRecordService = {
   //@private
-  _mixinScopes: function (scope) {
-    var _scope = ['defaultScope'];
-    if (_.isArray(scope)) {
-      _scope = _scope.concat(scope);
-    } else if (_.isString(scope)) {
-      _scope.push(scope);
-    }
-    debug('_mixinScopes: ', _scope);
-    return _scope;
-  },
+  _mixinScopes: lang.mixinScopes,
   /**
    * Gets all cached URL records
    * @return Promise({Array<UrlRecordForCaching>}) cached URL records
@@ -67,19 +58,21 @@ var UrlRecordService = {
   getAllUrlRecordsCached: function () {
     //cache
     var key = lang.stringFormat(URLRECORD_ALL_KEY);
-    return _cacheManager.get(key, function () {
-      return UrlRecordModel.findAll({
-          where: {
-            active: true
-          }
-        })
-        .then(function (urlRecords) {
-          var results = [];
-          _.forEach(urlRecords || [], function (record) {
-            results.push(map(record));
+    return _cacheManager.get(key, {
+      promiseFn: function () {
+        return UrlRecordModel.findAll({
+            where: {
+              active: true
+            }
+          })
+          .then(function (urlRecords) {
+            var results = [];
+            _.forEach(urlRecords || [], function (record) {
+              results.push(map(record));
+            });
+            return results;
           });
-          return results;
-        });
+      }
     });
   },
   getAllUrlRecords: function (page, size, scope, query) {
@@ -195,15 +188,17 @@ var UrlRecordService = {
     //gradual loading
     var key = lang.stringFormat(URLRECORD_BY_SLUG_KEY, slug);
     var self = this;
-    return _cacheManager.get(key, function () {
-      self.getBySlug(slug)
-        .then(function (urlRecord) {
-          if (urlRecord == null) {
-            return null;
-          }
-          var urlRecordForCaching = map(urlRecord);
-          return urlRecordForCaching;
-        });
+    return _cacheManager.get(key, {
+      promiseFn: function () {
+        self.getBySlug(slug)
+          .then(function (urlRecord) {
+            if (urlRecord == null) {
+              return null;
+            }
+            var urlRecordForCaching = map(urlRecord);
+            return urlRecordForCaching;
+          });
+      }
     });
   },
 
@@ -216,20 +211,22 @@ var UrlRecordService = {
   getActiveSlug: function (entityId, entityName) {
     var key = lang.stringFormat(URLRECORD_ACTIVE_BY_ID_NAME_KEY, entityId, entityName);
     var self = this;
-    return _cacheManager.get(key, function () {
-      self.getAllUrlRecordsCached()
-        .then(function (results) {
-          var findRecord = null;
-          if (results && result.length) {
-            _.forEach(results, function (record) {
-              if (record.active == true && record.entityId == entityId && record.entityName == entityName) {
-                findRecord = record;
-                return false;
-              }
-            });
-          }
-          return findRecord;
-        });
+    return _cacheManager.get(key, {
+      promiseFn: function () {
+        self.getAllUrlRecordsCached()
+          .then(function (results) {
+            var findRecord = null;
+            if (results && result.length) {
+              _.forEach(results, function (record) {
+                if (record.active == true && record.entityId == entityId && record.entityName == entityName) {
+                  findRecord = record;
+                  return false;
+                }
+              });
+            }
+            return findRecord;
+          });
+      }
     });
   },
   /**
@@ -241,7 +238,8 @@ var UrlRecordService = {
    * @return {Promise}
    */
   saveSlug: function (entityId, entityName, slug) {
-    UrlRecordModel.findAll({
+    var self = this;
+    return UrlRecordModel.findAll({
       where: {
         entityId: entityId,
         entityName: entityName
@@ -330,7 +328,7 @@ var UrlRecordService = {
               .then(function () {
                 //disable the previous active URL record
                 activeUrlRecord.active = false;
-                retrn self.updateUrlRecord(activeUrlRecord);
+                return self.updateUrlRecord(activeUrlRecord);
               });
           }
         }

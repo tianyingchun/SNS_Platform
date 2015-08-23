@@ -4,7 +4,6 @@ var UserService = require('../services/UserService');
 var AccessTokenService = require('../services/AccessTokenService');
 var lang = require('../common/lang');
 var debug = require('debug')('app:UserCtrl');
-var redis = require('../common/redis');
 var UserCtrl = {
 
   /**

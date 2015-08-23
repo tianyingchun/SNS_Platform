@@ -49,9 +49,10 @@ _.extend(RedisCache.prototype, {
     return self._redis.get(key)
       .then(function (data) {
         if (data) {
+          debug('return data from cache redis.get()', data);
           //return `cached` data.
           return deSerialize(data);
-        } else if (_.isDefined(promiseFn)) {
+        } else if (_.isFunction(promiseFn)) {
           // save new data to cache provider.
           return promiseFn().then(function (result) {
             debug('redis.get().set()', result);

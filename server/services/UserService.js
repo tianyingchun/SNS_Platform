@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var q = require('q');
+var lang = require('../common/lang');
 var debug = require('debug')('app:UserService');
 var Error = require('../constants/Error');
 var SecurityService = require('../services/SecurityService');
@@ -84,16 +85,7 @@ var UserService = {
       });
   },
   //@private
-  _mixinScopes: function (scope) {
-    var _scope = ['defaultScope'];
-    if (_.isArray(scope)) {
-      _scope = _scope.concat(scope);
-    } else if (_.isString(scope)) {
-      _scope.push(scope);
-    }
-    debug('_mixinScopes: ', _scope);
-    return _scope;
-  },
+  _mixinScopes: lang.mixinScopes,
   /**
    * Find user by some conditions
    * @param  {Object}  required: query conditions

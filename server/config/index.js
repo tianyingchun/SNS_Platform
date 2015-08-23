@@ -1,5 +1,4 @@
 var _ = require('lodash');
-var lang = require('../common/lang');
 // site configuration.
 var config = {
   appName: 'SPM',
@@ -36,7 +35,7 @@ var db = {
   },
   getTableName: function (tabName) {
     // Social network marketing platform
-    return 'spm_' + lang.toSnakeCase(tabName);
+    return 'spm_' + _.snakeCase(tabName);
   },
   syncOptions: {
 
